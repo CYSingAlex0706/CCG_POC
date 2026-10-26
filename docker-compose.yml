@@ -1,0 +1,33 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: properties
+      DB_USER: app
+      DB_PASS: appsecret
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: properties
+      MYSQL_USER: app
+      MYSQL_PASSWORD: appsecret
+      MYSQL_ROOT_PASSWORD: rootsecret
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - dbdata:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+
+volumes:
+  dbdata:
