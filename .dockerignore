@@ -1,0 +1,9 @@
+**/.git
+**/.env
+**/*.log
+**/node_modules
+k8s/
+db/
+Dockerfile
+.dockerignore
+README.md

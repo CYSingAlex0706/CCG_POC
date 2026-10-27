@@ -1,0 +1,79 @@
+# ---------------------------------------------------------------------
+# 4. ConfigMap — 建表 SQL(供 Job 使用)
+#    若 DB 已建好表,可删除本 ConfigMap + 下面的 Job
+# ---------------------------------------------------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: properties-schema
+  namespace: properties
+data:
+  schema.sql: |
+    CREATE TABLE IF NOT EXISTS sale_documents (
+      id               INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      reference        VARCHAR(32)  NOT NULL UNIQUE,
+      property_address VARCHAR(255) NOT NULL,
+      city             VARCHAR(100) NOT NULL,
+      property_type    ENUM('apartment','house','land','commercial') NOT NULL,
+      price            DECIMAL(12,2) NOT NULL,
+      sale_date        DATE NOT NULL,
+      status           ENUM('draft','pending','signed','completed','cancelled') NOT NULL DEFAULT 'draft',
+      document_type    VARCHAR(64) NOT NULL,
+      updated_at       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB;
+
+    INSERT IGNORE INTO sale_documents
+      (reference, property_address, city, property_type, price, sale_date, status, document_type)
+    VALUES
+      ('SD-2026-0001','12 Rue des Lilas','Lyon','apartment',245000.00,'2026-01-12','signed','Compromis de vente'),
+      ('SD-2026-0002','8 Avenue du Parc','Bordeaux','house',480000.00,'2026-01-28','pending','Mandat de vente'),
+      ('SD-2026-0003','45 Chemin des Vignes','Nantes','house',312500.00,'2026-02-03','completed','Acte authentique'),
+      ('SD-2026-0004','3 Place du Marché','Lille','commercial',620000.00,'2026-02-14','draft','Lettre d''intention'),
+      ('SD-2026-0005','Lot 27 - ZAC des Chênes','Toulouse','land',98000.00,'2026-02-20','signed','Promesse de vente'),
+      ('SD-2026-0006','101 Boulevard Voltaire','Paris','apartment',735000.00,'2026-03-02','pending','Compromis de vente'),
+      ('SD-2026-0007','5 Impasse des Roses','Marseille','apartment',189000.00,'2026-03-11','completed','Acte authentique'),
+      ('SD-2026-0008','22 Route de la Forêt','Strasbourg','house',398000.00,'2026-03-19','cancelled','Mandat de vente');
+
+
+---
+# ---------------------------------------------------------------------
+# 5. Job — 一次性建表 + 种子数据
+#    只需跑一次;跑完后可删除,或让 ttlSecondsAfterFinished 自动清理
+# ---------------------------------------------------------------------
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: properties-schema-init
+  namespace: properties
+spec:
+  ttlSecondsAfterFinished: 600       # 成功 10 分钟后自动删除 Job + Pod
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: init
+          image: mysql:8.0
+          command:
+            - bash
+            - -c
+            - |
+              set -euo pipefail
+              echo "Applying schema to ${DB_HOST}:${DB_PORT}/${DB_NAME}..."
+              mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < /sql/schema.sql
+              echo "Schema applied."
+          envFrom:
+            - configMapRef: { name: properties-config }
+            - secretRef:    { name: properties-secret }
+          volumeMounts:
+            - name: sql
+              mountPath: /sql
+              readOnly: true
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits:   { cpu: 200m, memory: 128Mi }
+      volumes:
+        - name: sql
+          configMap:
+            name: properties-schema
+
