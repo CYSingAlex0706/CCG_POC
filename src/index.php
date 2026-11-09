@@ -3,7 +3,14 @@ declare(strict_types=1);
 require __DIR__ . '/bootstrap.php';
 
 $t0         = microtime(true);
-$useCache   = !isset($_GET['nocache']);   // /index.php?nocache=1 -> force DB path
+
+// [DEMO] 只在非 prod 环境允许触发 DB 故障，防止线上被人手动打出 500
+$failDb     = isset($_GET['faildb'])
+              && (($config['app']['env'] ?? 'local') !== 'prod');
+
+// [DEMO] faildb 时必须跳过缓存，否则请求命中缓存根本不碰 DB，APM 里啥也看不到
+$useCache   = !isset($_GET['nocache']) && !$failDb;
+
 $cacheKey   = 'sale_documents:list';
 $cacheHit   = false;
 $docs       = null;
@@ -28,6 +35,22 @@ if ($useCache) {
 if ($docs === null) {
     $dbStart = microtime(true);
     try {
+        // [DEMO] 真实连接失败：端口 1 必然 Connection refused，
+        //        这样 APM 的 PDO 插桩才会产生 error=true 的 DB span。
+        if ($failDb) {
+            $badPdo = new PDO(
+                'mysql:host=127.0.0.1;port=1;dbname=nope',
+                'nope',
+                'nope',
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_TIMEOUT => 1, // 1s 超时，演示超时告警
+                ]
+            );
+            // 保险：即使构造意外成功也让它失败
+            $badPdo->query('SELECT 1');
+        }
+
         $stmt = db()->query(
             'SELECT id, reference, property_address, city, property_type, price,
                     sale_date, status, document_type, updated_at
@@ -38,7 +61,11 @@ if ($docs === null) {
     } catch (Throwable $e) {
         log_line('error', 'db_query_failed', ['query' => 'list_sale_documents', 'error' => $e->getMessage()]);
         http_response_code(500);
-        echo 'Database error';
+        // [DEMO] 错误页带个返回链接，方便反复点按钮演示
+        echo '<!doctype html><meta charset="utf-8">'
+           . '<p style="font-family:system-ui;margin:2rem">Database error</p>'
+           . '<p style="font-family:system-ui;margin:2rem">'
+           . '<a href="/index.php">back to list</a></p>';
         exit;
     }
 
@@ -100,7 +127,8 @@ log_line('info', 'http_request', [
         cache: <strong><?= $cacheHit ? 'HIT' : 'MISS' ?></strong> ·
         render: <?= $elapsed ?> ms ·
         page views: <?= $views ?> ·
-        <a href="/index.php?nocache=1">force cache miss</a>
+        <a href="/index.php?nocache=1">force cache miss</a> ·
+        <a href="/index.php?faildb=1">simulate DB failure</a>
     </p>
 
     <table>

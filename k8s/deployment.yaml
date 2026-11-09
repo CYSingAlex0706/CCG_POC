@@ -45,13 +45,13 @@ metadata:
   name: properties-config
   namespace: properties
 data:
-  DB_HOST: "properties-db.xxxxx.eu-west-1.rds.amazonaws.com"
+  DB_HOST: "tf-sql-server-01.database.windows.net"
   DB_PORT: "3306"
-  DB_NAME: "properties"
-  REDIS_HOST: "properties-redis.xxxxx.cache.amazonaws.com"
-  REDIS_PORT: "6379"
-  REDIS_DB: "0"
-  REDIS_TTL: "60"
+  DB_NAME: "appdb"
+  # REDIS_HOST: "properties-redis.xxxxx.cache.amazonaws.com"
+  # REDIS_PORT: "6379"
+  # REDIS_DB: "0"
+  # REDIS_TTL: "60"
 
 ---
 

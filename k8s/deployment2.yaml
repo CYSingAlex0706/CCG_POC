@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: properties-web
+spec:
+  selector:
+    app: properties-web
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None   # Headless Service，或改为普通 ClusterIP 也可以
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+type: Opaque
+stringData:
+  MYSQL_ROOT_PASSWORD: "rootpassword"
+  MYSQL_PASSWORD: "apppassword"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              value: "properties"          # 对应你应用的 DB_NAME
+            - name: MYSQL_USER
+              value: "app"                 # 对应你应用的 DB_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-data
+          emptyDir: {}   # 测试用；生产环境请换成 PersistentVolumeClaim
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: properties-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: properties-web
+  template:
+    metadata:
+      labels:
+        app: properties-web
+    spec:
+      containers:
+        - name: web
+          image: alexchui210246098/properties-web:latest   # 或你指定的 tag
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_HOST
+              value: "mysql"                    # Service 名称
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_NAME
+              value: "properties"
+            - name: DB_USER
+              value: "app"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD           # 与 MySQL 的 MYSQL_PASSWORD 保持一致
