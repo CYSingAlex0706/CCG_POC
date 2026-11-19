@@ -1,0 +1,42 @@
+{
+  "startedAt": "2026-11-19T07:04:59.701Z",
+  "requests": [
+    {
+      "url": "http://150.5.141.233/document/2",
+      "traceparent": "00-401fbb2b0252f0be12eb3dfbdfea5efb-12eb3dfbdfea5efb-01"
+    },
+    {
+      "url": "http://150.5.141.233/?faildb=1",
+      "traceparent": "00-041f30aed599e00d01cc32b440e37e86-01cc32b440e37e86-01"
+    }
+  ],
+  "rumResponses": [
+    200,
+    200
+  ],
+  "session": {
+    "application": {
+      "id": "CCG"
+    },
+    "session": {
+      "id": "79453179-8cd9-457c-a939-a858cc1fa4fb"
+    },
+    "view": {
+      "id": "07c26c68-18d6-438c-86eb-65858e147514",
+      "name": "/",
+      "url": "http://150.5.141.233/",
+      "referrer": "",
+      "host": "150.5.141.233",
+      "path": "/",
+      "pathGroup": "/",
+      "pathname": "/",
+      "urlQuery": {}
+    }
+  },
+  "privacy": "mask-user-input",
+  "statuses": [
+    200,
+    500
+  ],
+  "completedAt": "2026-11-19T07:05:08.898Z"
+}

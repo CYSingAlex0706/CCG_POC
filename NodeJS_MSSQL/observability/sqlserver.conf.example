@@ -1,0 +1,13 @@
+[[inputs.sqlserver]]
+  host = "127.0.0.1:1433"
+  user = "guance_monitor"
+  password = "REPLACE_MONITOR_PASSWORD"
+  database = "properties"
+  connection_parameters = "encrypt=true&TrustServerCertificate=true"
+  interval = "15s"
+  election = false
+  measurement_version = "v2"
+  [inputs.sqlserver.tags]
+    service = "ccg-mssql-db"
+    env = "poc"
+    project = "CCG_POC"

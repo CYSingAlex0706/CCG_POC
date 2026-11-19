@@ -1,0 +1,213 @@
+{
+  "name": "chain",
+  "query": "T::`*`:(trace_id, span_id, parent_id, service, resource, operation, span_type, status, message) { trace_id IN [\"401fbb2b0252f0be12eb3dfbdfea5efb\", \"041f30aed599e00d01cc32b440e37e86\"] } LIMIT 50",
+  "start_time": 1795071092127,
+  "end_time": 1795071992127,
+  "check": {
+    "query_text": "T::`*`:(trace_id, span_id, parent_id, service, resource, operation, span_type, status, message) { trace_id IN [\"401fbb2b0252f0be12eb3dfbdfea5efb\", \"041f30aed599e00d01cc32b440e37e86\"] } LIMIT 50",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795071992127,
+        "start_time": 1795071092127
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "566ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"request handler - /\",\"service\":\"ccg-mssql\",\"trace_id\":\"041f30aed599e00d01cc32b440e37e86\"}",
+          "operation": null,
+          "parent_id": "855707b604b8f8a6",
+          "resource": "request handler - /",
+          "service": "ccg-mssql",
+          "span_id": "027f4a172099dd2d",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795071900660,
+          "trace_id": "041f30aed599e00d01cc32b440e37e86"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"GET /\",\"service\":\"guance-poc-nginx\",\"trace_id\":\"041f30aed599e00d01cc32b440e37e86\"}",
+          "operation": null,
+          "parent_id": "01cc32b440e37e86",
+          "resource": "GET /",
+          "service": "guance-poc-nginx",
+          "span_id": "aeb8fa224e8c0be7",
+          "span_type": "entry",
+          "status": "error",
+          "time": 1795071900659,
+          "trace_id": "041f30aed599e00d01cc32b440e37e86"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"GET\",\"service\":\"ccg-mssql\",\"trace_id\":\"041f30aed599e00d01cc32b440e37e86\"}",
+          "operation": null,
+          "parent_id": "aeb8fa224e8c0be7",
+          "resource": "GET",
+          "service": "ccg-mssql",
+          "span_id": "855707b604b8f8a6",
+          "span_type": "entry",
+          "status": "error",
+          "time": 1795071900659,
+          "trace_id": "041f30aed599e00d01cc32b440e37e86"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"middleware - expressInit\",\"service\":\"ccg-mssql\",\"trace_id\":\"041f30aed599e00d01cc32b440e37e86\"}",
+          "operation": null,
+          "parent_id": "855707b604b8f8a6",
+          "resource": "middleware - expressInit",
+          "service": "ccg-mssql",
+          "span_id": "bd959016b427fa33",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795071900659,
+          "trace_id": "041f30aed599e00d01cc32b440e37e86"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"middleware - query\",\"service\":\"ccg-mssql\",\"trace_id\":\"041f30aed599e00d01cc32b440e37e86\"}",
+          "operation": null,
+          "parent_id": "855707b604b8f8a6",
+          "resource": "middleware - query",
+          "service": "ccg-mssql",
+          "span_id": "a697984e10648564",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795071900659,
+          "trace_id": "041f30aed599e00d01cc32b440e37e86"
+        },
+        {
+          "message": "{\"resource\":\"/\",\"service\":\"guance-poc-web\",\"trace_id\":\"041f30aed599e00d01cc32b440e37e86\"}",
+          "operation": "/",
+          "parent_id": "0",
+          "resource": "/",
+          "service": "guance-poc-web",
+          "span_id": "01cc32b440e37e86",
+          "span_type": "entry",
+          "status": "error",
+          "time": 1795071900651,
+          "trace_id": "041f30aed599e00d01cc32b440e37e86"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"execSql properties\",\"service\":\"ccg-mssql\",\"trace_id\":\"401fbb2b0252f0be12eb3dfbdfea5efb\"}",
+          "operation": null,
+          "parent_id": "268764bafb6b119c",
+          "resource": "execSql properties",
+          "service": "ccg-mssql",
+          "span_id": "8ceffd44d2f1814d",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795071900640,
+          "trace_id": "401fbb2b0252f0be12eb3dfbdfea5efb"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"GET /document/:id\",\"service\":\"ccg-mssql\",\"trace_id\":\"401fbb2b0252f0be12eb3dfbdfea5efb\"}",
+          "operation": null,
+          "parent_id": "42d40cc40bc52d94",
+          "resource": "GET /document/:id",
+          "service": "ccg-mssql",
+          "span_id": "15b48225f1b4cf50",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795071900639,
+          "trace_id": "401fbb2b0252f0be12eb3dfbdfea5efb"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"execSql properties\",\"service\":\"ccg-mssql\",\"trace_id\":\"401fbb2b0252f0be12eb3dfbdfea5efb\"}",
+          "operation": null,
+          "parent_id": "268764bafb6b119c",
+          "resource": "execSql properties",
+          "service": "ccg-mssql",
+          "span_id": "d6094417f8fe65ab",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795071900639,
+          "trace_id": "401fbb2b0252f0be12eb3dfbdfea5efb"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"request handler - /document/:id\",\"service\":\"ccg-mssql\",\"trace_id\":\"401fbb2b0252f0be12eb3dfbdfea5efb\"}",
+          "operation": null,
+          "parent_id": "15b48225f1b4cf50",
+          "resource": "request handler - /document/:id",
+          "service": "ccg-mssql",
+          "span_id": "268764bafb6b119c",
+          "span_type": "local",
+          "status": "ok",
+          "time": 1795071900639,
+          "trace_id": "401fbb2b0252f0be12eb3dfbdfea5efb"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"middleware - expressInit\",\"service\":\"ccg-mssql\",\"trace_id\":\"401fbb2b0252f0be12eb3dfbdfea5efb\"}",
+          "operation": null,
+          "parent_id": "15b48225f1b4cf50",
+          "resource": "middleware - expressInit",
+          "service": "ccg-mssql",
+          "span_id": "682ef09813cd7d9f",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795071900639,
+          "trace_id": "401fbb2b0252f0be12eb3dfbdfea5efb"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"middleware - query\",\"service\":\"ccg-mssql\",\"trace_id\":\"401fbb2b0252f0be12eb3dfbdfea5efb\"}",
+          "operation": null,
+          "parent_id": "15b48225f1b4cf50",
+          "resource": "middleware - query",
+          "service": "ccg-mssql",
+          "span_id": "907306e8b421abab",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795071900639,
+          "trace_id": "401fbb2b0252f0be12eb3dfbdfea5efb"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"GET /document/:id\",\"service\":\"guance-poc-nginx\",\"trace_id\":\"401fbb2b0252f0be12eb3dfbdfea5efb\"}",
+          "operation": null,
+          "parent_id": "12eb3dfbdfea5efb",
+          "resource": "GET /document/:id",
+          "service": "guance-poc-nginx",
+          "span_id": "42d40cc40bc52d94",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795071900638,
+          "trace_id": "401fbb2b0252f0be12eb3dfbdfea5efb"
+        },
+        {
+          "message": "{\"resource\":\"/document/2\",\"service\":\"guance-poc-web\",\"trace_id\":\"401fbb2b0252f0be12eb3dfbdfea5efb\"}",
+          "operation": "/document/2",
+          "parent_id": "0",
+          "resource": "/document/2",
+          "service": "guance-poc-web",
+          "span_id": "12eb3dfbdfea5efb",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795071900631,
+          "trace_id": "401fbb2b0252f0be12eb3dfbdfea5efb"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6afe9ffa00000000b27cc68765aedbbc",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

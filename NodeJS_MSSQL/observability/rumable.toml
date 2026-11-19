@@ -1,0 +1,27 @@
+schemaVersion = 1
+[[sites]]
+id = "guance-poc"
+publicURL = "http://150.5.141.233/"
+includePaths = ["/"]
+probePaths = ["/", "/document/1"]
+[sites.nginx]
+binary = "/usr/sbin/nginx"
+args = ["-c", "/etc/nginx/nginx.conf"]
+attachmentReviewed = false
+[sites.sdk]
+source = "bundled"
+loading = "sync"
+[sites.rum]
+applicationId = "CCG"
+datakitOrigin = "http://150.5.141.233"
+service = "guance-poc-web"
+env = "poc"
+version = "1.0.0"
+sessionSampleRate = 100
+sessionReplayEnabled = true
+sessionReplaySampleRate = 100
+defaultPrivacyLevel = "mask-user-input"
+trackUserInteractions = true
+traceType = "w3c_traceparent"
+allowedTracingUrls = ["http://150.5.141.233/"]
+tracingSampleRate = 100

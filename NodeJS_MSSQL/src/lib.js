@@ -2,9 +2,16 @@
 
 const sql = require('mssql');
 const config = require('./config');
+const { context, trace } = require('@opentelemetry/api');
 
 function logLine(level, msg, ctx = {}) {
+  const span = trace.getSpan(context.active())?.spanContext();
   process.stderr.write(JSON.stringify({
+    service: process.env.OTEL_SERVICE_NAME || "ccg-mssql",
+    status: level,
+    message: msg,
+    trace_id: span?.traceId,
+    span_id: span?.spanId,
     ts: new Date().toISOString(),
     level,
     msg,

@@ -1,0 +1,50 @@
+{
+  "name": "runtime",
+  "query": "M::otel_service:(last(`nodejs.eventloop.utilization`),last(`v8js.memory.heap.used`)) { service_name = \"ccg-mssql\" }",
+  "start_time": 1795071092127,
+  "end_time": 1795071992127,
+  "check": {
+    "query_text": "M::otel_service:(last(`nodejs.eventloop.utilization`),last(`v8js.memory.heap.used`)) { service_name = \"ccg-mssql\" }",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795071992127,
+        "start_time": 1795071092127
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "67ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "last(nodejs.eventloop.utilization)": 0.0004697101907007,
+          "last(v8js.memory.heap.used)": 0,
+          "time": 1795071989278
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6afe9ffc00000000f3c361eee70d4be2",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

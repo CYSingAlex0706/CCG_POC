@@ -5,7 +5,7 @@ WORKDIR /app
 
 # 依赖层（package.json 在根）
 COPY package*.json ./
-RUN npm ci --omit=dev || npm install --omit=dev
+RUN npm ci --omit=dev
 
 # 应用代码（在 src/ 下）
 COPY --chown=node:node src/ ./src/

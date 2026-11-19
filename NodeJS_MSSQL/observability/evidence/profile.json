@@ -1,0 +1,49 @@
+{
+  "name": "profile",
+  "query": "P::`*`:(count(*)) { service = \"ccg-mssql\" }",
+  "start_time": 1795071092127,
+  "end_time": 1795071992127,
+  "check": {
+    "query_text": "P::`*`:(count(*)) { service = \"ccg-mssql\" }",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795071992127,
+        "start_time": 1795071092127
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "492ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "count(*)": 8,
+          "time": 1795071909000
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6afe9ffd00000000a93915fc86750d82",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

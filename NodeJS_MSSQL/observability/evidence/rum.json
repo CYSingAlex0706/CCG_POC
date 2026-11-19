@@ -1,0 +1,65 @@
+{
+  "name": "rum",
+  "query": "R::`*`:(count(*)) { app_id = \"CCG\" AND session_id = \"79453179-8cd9-457c-a939-a858cc1fa4fb\" } BY source",
+  "start_time": 1795071092127,
+  "end_time": 1795071992127,
+  "check": {
+    "query_text": "R::`*`:(count(*)) { app_id = \"CCG\" AND session_id = \"79453179-8cd9-457c-a939-a858cc1fa4fb\" } BY source",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795071992127,
+        "start_time": 1795071092127
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "1024ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "count(*)": 1,
+          "source": "long_task",
+          "time": 1795071899833
+        },
+        {
+          "count(*)": 2,
+          "source": "session_replay",
+          "time": 1795071907340
+        },
+        {
+          "count(*)": 6,
+          "source": "resource",
+          "time": 1795071900651
+        },
+        {
+          "count(*)": 1,
+          "source": "view",
+          "time": 1795071899765
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6afe9ffd0000000012f7981e725af206",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}
