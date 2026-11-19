@@ -1,0 +1,14 @@
+[Unit]
+Description=CCG Node.js MSSQL Demo
+After=network.target docker.service datakit.service
+[Service]
+User=guance-poc
+Group=guance-poc
+WorkingDirectory=/opt/ccg-poc/NodeJS_MSSQL
+ExecStart=/usr/local/bin/node src/server.js
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
