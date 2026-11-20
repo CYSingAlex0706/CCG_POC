@@ -29,8 +29,8 @@ metadata:
   name: mysql-secret
 type: Opaque
 stringData:
-  MYSQL_ROOT_PASSWORD: "rootpassword"
-  MYSQL_PASSWORD: "apppassword"
+  MYSQL_ROOT_PASSWORD: "<replace-with-secret>"
+  MYSQL_PASSWORD: "<replace-with-secret>"
 
 ---
 apiVersion: apps/v1

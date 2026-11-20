@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>APM 觀測台 · 華懋物業銷售系統</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">
+    <span class="brand-mark">華</span>
+    <span><span class="brand-name">CHINACHEM GROUP</span><br><span class="brand-sub">Property Sales · Observability</span></span>
+  </a>
+  <nav class="navlinks">
+    <a href="/" class="active">APM 觀測台</a>
+    <a href="/sales.html">物業銷售</a>
+    <a href="/legacy">舊版頁面</a>
+  </nav>
+  <div class="topbar-right">
+    <span class="env-chip" id="envChip">DEMO</span>
+    <span><span class="status-dot" id="statusDot"></span> <span id="healthText" style="font-size:12px;color:rgba(255,255,255,.8)">檢查中…</span></span>
+    <span class="clock" id="clock">--:--:--</span>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hero">
+    <div>
+      <div class="hero-eyebrow">Application Performance Monitoring</div>
+      <h1>物業銷售平台 · 服務觀測中台</h1>
+      <p>實時追蹤前端與後端伺服器之間的請求、延遲與錯誤。右側數字為過去一分鐘的每秒請求數。</p>
+    </div>
+    <div class="hero-pulse">
+      <div><div class="pulse-num" id="rpsNum">0</div><div class="pulse-label">REQUESTS / SEC</div></div>
+      <div><div class="pulse-num" id="errorNum" style="color:#ff9c90">0</div><div class="pulse-label">ERRORS / 1M</div></div>
+    </div>
+  </section>
+
+  <section class="grid grid-4" style="margin-top:18px">
+    <div class="kpi ok" id="kpiAvail"><div class="kpi-label">服務可用率</div><div class="kpi-value" id="mAvail">—</div><div class="kpi-foot" id="fAvail">讀取中…</div></div>
+    <div class="kpi" id="kpiErr"><div class="kpi-label">錯誤率</div><div class="kpi-value" id="mErr">—<span class="kpi-unit">%</span></div><div class="kpi-foot" id="fErr">HTTP 4xx / 5xx</div></div>
+    <div class="kpi" id="kpiP95"><div class="kpi-label">P95 回應時間</div><div class="kpi-value" id="mP95">—<span class="kpi-unit">ms</span></div><div class="kpi-foot" id="fP95">—</div></div>
+    <div class="kpi" id="kpiDb"><div class="kpi-label">資料庫</div><div class="kpi-value" id="mDb" style="font-size:22px;padding-top:7px">—</div><div class="kpi-foot" id="fDb">—</div></div>
+  </section>
+
+  <section class="grid grid-32" style="margin-top:16px">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">流量與延遲 · 近 60 秒</span>
+        <span class="legend"><span style="--c:var(--forest-700)">請求數</span><span style="--c:var(--danger)">錯誤</span><span style="--c:var(--teal-500)">平均延遲</span></span>
+      </div>
+      <div class="card-body"><svg id="trafficChart" class="chart" viewBox="0 0 760 210" preserveAspectRatio="none" role="img" aria-label="流量與延遲時序圖"></svg></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">故障注入控制台</span><span class="card-hint">DEMO ONLY</span></div>
+      <div class="card-body">
+        <div class="chaos-row">
+          <div><div class="chaos-label">資料庫連線失敗</div><div class="chaos-desc">模擬后端 DB ECONNREFUSED · 500</div></div>
+          <button class="switch" id="swDb" data-key="db" aria-label="切換資料庫故障"></button>
+        </div>
+        <div class="chaos-row">
+          <div><div class="chaos-label">強制 HTTP 500</div><div class="chaos-desc">所有數據端點回傳 500</div></div>
+          <button class="switch" id="sw500" data-key="http500" aria-label="切換 HTTP 500"></button>
+        </div>
+        <div class="chaos-row">
+          <div><div class="chaos-label">人為延遲</div><div class="chaos-desc">阻塞事件循環，模擬慢查詢</div></div>
+          <div class="btn-row"><input id="latencyMs" class="input-ms" type="number" min="0" max="10000" value="1500" aria-label="延遲毫秒"><button class="btn sm ghost" id="btnLatency">套用</button></div>
+        </div>
+        <div class="btn-row" style="margin-top:16px">
+          <button class="btn danger sm" id="btnReset">全部重置</button>
+          <a class="btn ghost sm" href="/sales.html">到銷售頁測試 →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid grid-2" style="margin-top:16px">
+    <div class="card">
+      <div class="card-head"><span class="card-title">端點效能</span><span class="card-hint">依請求數排序</span></div>
+      <div class="table-wrap"><table class="data">
+        <thead><tr><th>端點</th><th class="num">請求</th><th class="num">平均</th><th class="num">錯誤率</th></tr></thead>
+        <tbody id="endpointRows"><tr><td colspan="4" class="empty">尚無資料</td></tr></tbody>
+      </table></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">錯誤日誌</span><span class="card-hint" id="errCount">0 筆</span></div>
+      <div class="feed" id="errorFeed"><div class="empty">尚無錯誤</div></div>
+    </div>
+  </section>
+
+  <section class="grid grid-2" style="margin-top:16px">
+    <div class="card">
+      <div class="card-head"><span class="card-title">伺服器請求追蹤</span><span class="card-hint">最近 20 筆</span></div>
+      <div class="feed" id="serverFeed"><div class="empty">尚無請求</div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span class="card-title">前端 → 後端 · 瀏覽器觀測</span><span class="card-hint" id="clientHint">本頁面的 fetch</span></div>
+      <div class="feed" id="clientFeed"><div class="empty">等待瀏覽器事件…</div></div>
+    </div>
+  </section>
+
+  <div class="page-foot"><span>Chinachem Group — Property Sales APM Demo · 資料為演示用途</span><span>每 2 秒自動更新</span></div>
+</main>
+
+<script src="/js/rum.js"></script>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

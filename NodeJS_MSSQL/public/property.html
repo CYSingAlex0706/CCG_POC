@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>樓盤詳情 · 華懋物業銷售系統</title>
+<link rel="stylesheet" href="/app.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">
+    <span class="brand-mark">華</span>
+    <span><span class="brand-name">CHINACHEM GROUP</span><br><span class="brand-sub">Property Sales · Observability</span></span>
+  </a>
+  <nav class="navlinks">
+    <a href="/">APM 觀測台</a>
+    <a href="/sales.html" class="active">物業銷售</a>
+    <a href="/legacy">舊版頁面</a>
+  </nav>
+  <div class="topbar-right">
+    <span class="env-chip">DEMO</span>
+    <span><span class="status-dot" id="statusDot"></span> <span id="healthText" style="font-size:12px;color:rgba(255,255,255,.8)">檢查中…</span></span>
+    <span class="clock" id="clock">--:--:--</span>
+  </div>
+</header>
+<main class="page page-narrow">
+  <div class="crumb"><a href="/sales.html">物業銷售</a> / 樓盤詳情</div>
+  <div id="content"><div class="card"><div class="card-body empty">載入中…</div></div></div>
+  <div class="page-foot"><span>樓盤資訊取自華懋集團官方網站</span><span id="timing"></span></div>
+</main>
+<script src="/js/rum.js"></script>
+<script>
+(function () {
+  'use strict';
+  const { apiFetch, renderHealthInto, clockInto } = window.RUM;
+  renderHealthInto(document.getElementById('healthText'));
+  clockInto(document.getElementById('clock'));
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  }[c]));
+  const id = new URLSearchParams(location.search).get('id');
+  const t0 = performance.now();
+  apiFetch('/api/properties/' + encodeURIComponent(id || '')).then(async res => {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  }).then(p => {
+    $('timing').textContent = '查詢 ' + Math.round(performance.now() - t0) + 'ms';
+    document.title = p.name + ' · 華懋物業銷售系統';
+    $('content').innerHTML = `
+      <section class="hero-property">
+        <div><div class="hero-kicker">${esc(p.category)} / ${esc(p.type)}</div>
+          <h1>${esc(p.name)} <span style="font-size:.5em;font-weight:300">${esc(p.nameZh)}</span></h1>
+          <div class="tagline">${esc(p.tagline)}</div>
+          <div class="addr">${esc(p.address)}</div></div>
+        <dl class="hero-meta">
+          <div><dt>地區</dt><dd>${esc(p.district)}</dd></div>
+          <div><dt>校網</dt><dd>${esc(p.schoolNet)}</dd></div>
+          <div><dt>狀態</dt><dd style="color:var(--teal-400)">${esc(p.status)}</dd></div>
+        </dl>
+      </section>
+      <div class="card" style="margin-top:18px">
+        <div class="card-head"><span class="card-title">物業資訊</span></div>
+        <div class="card-body"><dl class="detail">
+          <dt>項目名稱</dt><dd>${esc(p.name)}（${esc(p.nameZh)}）</dd>
+          <dt>地址</dt><dd>${esc(p.address)}</dd>
+          <dt>特點</dt><dd>${esc(p.details)}</dd>
+          <dt>類型</dt><dd>${esc(p.category)} / ${esc(p.type)}</dd>
+          <dt>校網</dt><dd>${esc(p.schoolNet)}</dd>
+        </dl>
+        <div class="btn-row" style="margin-top:18px"><a class="btn ghost sm" href="/sales.html">← 返回物業列表</a><a class="btn sm" href="/">查看 APM 觀測台 →</a></div>
+        </div>
+      </div>`;
+  }).catch(e => {
+    $('timing').textContent = '失敗 ' + Math.round(performance.now() - t0) + 'ms';
+    $('content').innerHTML = `<div class="card"><div class="card-body empty" style="color:var(--danger)">
+      無法載入樓盤：${esc(e.message)} · 已記錄至 APM<div style="margin-top:16px"><a class="btn ghost sm" href="/sales.html">返回</a></div></div></div>`;
+  });
+})();
+</script>
+</body>
+</html>
