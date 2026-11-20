@@ -1,10 +1,15 @@
 /* ------------------------------------------------------------------
-   Table
+   Sale documents — MSSQL schema and seed data
    - INT UNSIGNED AUTO_INCREMENT  -> INT IDENTITY(1,1)
    - UNIQUE on reference           -> UNIQUE constraint
    - ENUM(...)                     -> CHECK constraint
    - ON UPDATE CURRENT_TIMESTAMP   -> AFTER UPDATE trigger (below)
    - ENGINE=InnoDB                 -> not applicable
+
+   Seed data uses Hong Kong properties and HKD prices so the MSSQL mode
+   matches the in-memory demo data in src/data.js.
+   Property names / addresses are from Chinachem Group public listings.
+   Prices and documents are DEMO DATA for the APM demonstration only.
    ------------------------------------------------------------------ */
 IF OBJECT_ID(N'dbo.sale_documents', N'U') IS NULL
 BEGIN
@@ -68,14 +73,14 @@ INSERT INTO dbo.sale_documents
 SELECT v.reference, v.property_address, v.city, v.property_type,
        v.price, v.sale_date, v.status, v.document_type
 FROM (VALUES
-    (N'SD-2026-0001', N'12 Rue des Lilas',           N'Lyon',       N'apartment',  245000.00, '2026-01-12', N'signed',    N'Compromis de vente'),
-    (N'SD-2026-0002', N'8 Avenue du Parc',           N'Bordeaux',   N'house',      480000.00, '2026-01-28', N'pending',   N'Mandat de vente'),
-    (N'SD-2026-0003', N'45 Chemin des Vignes',       N'Nantes',     N'house',      312500.00, '2026-02-03', N'completed', N'Acte authentique'),
-    (N'SD-2026-0004', N'3 Place du Marché',          N'Lille',      N'commercial', 620000.00, '2026-02-14', N'draft',     N'Lettre d''intention'),
-    (N'SD-2026-0005', N'Lot 27 - ZAC des Chênes',    N'Toulouse',   N'land',        98000.00, '2026-02-20', N'signed',    N'Promesse de vente'),
-    (N'SD-2026-0006', N'101 Boulevard Voltaire',     N'Paris',      N'apartment',  735000.00, '2026-03-02', N'pending',   N'Compromis de vente'),
-    (N'SD-2026-0007', N'5 Impasse des Roses',        N'Marseille',  N'apartment',  189000.00, '2026-03-11', N'completed', N'Acte authentique'),
-    (N'SD-2026-0008', N'22 Route de la Forêt',       N'Strasbourg', N'house',      398000.00, '2026-03-19', N'cancelled', N'Mandat de vente')
+    (N'SD-2026-0001', N'8 Tak Hing Street, Tsim Sha Tsui',        N'Kowloon',        N'apartment', 24500000.00, '2026-01-12', N'signed',    N'臨時買賣合約 / Preliminary Agreement'),
+    (N'SD-2026-0002', N'28 Tonkin Street, Cheung Sha Wan',        N'Kowloon',        N'apartment', 12800000.00, '2026-01-28', N'pending',   N'正式買賣合約 / Formal Agreement'),
+    (N'SD-2026-0003', N'1 Chung Hau Street, Ho Man Tin',          N'Kowloon',        N'apartment', 18650000.00, '2026-02-03', N'completed', N'轉讓契 / Assignment'),
+    (N'SD-2026-0004', N'18 Pak Pat Shan Road, Tai Tam',           N'Hong Kong',      N'house',     62000000.00, '2026-02-14', N'draft',     N'售樓說明書 / Sales Brochure'),
+    (N'SD-2026-0005', N'42 Kotewall Road, Mid-Levels',            N'Hong Kong',      N'apartment', 39800000.00, '2026-02-20', N'signed',    N'價單 / Price List'),
+    (N'SD-2026-0006', N'No. 301 Victoria Road, Pok Fu Lam',       N'Hong Kong',      N'apartment', 21700000.00, '2026-03-02', N'pending',   N'臨時買賣合約 / Preliminary Agreement'),
+    (N'SD-2026-0007', N'162 Hiram''s Highway, Hebe Haven',        N'New Territories',N'house',     47500000.00, '2026-03-11', N'completed', N'轉讓契 / Assignment'),
+    (N'SD-2026-0008', N'18 Pak Pat Shan Road, Tai Tam',           N'Hong Kong',      N'house',     58900000.00, '2026-03-19', N'cancelled', N'正式買賣合約 / Formal Agreement')
 ) AS v (reference, property_address, city, property_type, price, sale_date, status, document_type)
 WHERE NOT EXISTS
 (

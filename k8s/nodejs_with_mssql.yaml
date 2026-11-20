@@ -1,3 +1,5 @@
+# ⚠️ 已被 nodejs-apm.yaml 取代（新檔含 APM 觀測台、mem 模式、標準健康檢查）。
+# 本檔保留作歷史參考。Secret 名稱 mysql-secret 為舊命名，僅相容用途。
 
 apiVersion: v1
 kind: Service
@@ -18,7 +20,7 @@ metadata:
   name: mysql-secret
 type: Opaque
 stringData:
-  MYSQL_PASSWORD: "P@ssw0rd#123"
+  MYSQL_PASSWORD: "<replace-with-secret>"   # 請改用 kubectl create secret generic 設定
 
 ---
 
@@ -49,6 +51,8 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            - name: DATA_MODE
+              value: "mssql"
             - name: DB_HOST
               value: "tf-sql-server-01.database.windows.net"                    # Service 名称
             - name: DB_PORT

@@ -1,250 +1,259 @@
 'use strict';
 
 const express = require('express');
-const sql = require('mssql');
-const { logLine, db, config, shutdown } = require('./lib');
+const path = require('path');
+const config = require('./config');
+const store = require('./store');
+const telemetry = require('./telemetry');
 
 const app = express();
+app.disable('x-powered-by');
+app.use(express.json({ limit: '64kb' }));
+
+// ============ structured logging (compatible with the original) ============
+function logLine(level, msg, ctx = {}) {
+  process.stderr.write(JSON.stringify({
+    ts: new Date().toISOString(), level, msg, ctx,
+  }) + '\n');
+}
+
+// ============ request timing middleware ============
+app.use((req, res, next) => {
+  const t0 = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - t0;
+    const status = res.statusCode;
+    const isApi = req.path.startsWith('/api/');
+    telemetry.recordRequest(req, status, duration, {
+      source: isApi ? 'api' : 'page',
+      component: req.path.includes('db') ? 'mssql' : 'web',
+      detail: isApi ? undefined : undefined,
+    });
+    if (isApi || status >= 400) {
+      logLine(status >= 500 ? 'error' : 'info', 'http_request', {
+        path: req.originalUrl, status, duration_ms: duration,
+      });
+    }
+  });
+  next();
+});
 
 // ============ helpers ============
-
 function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
   }[c]));
 }
-
 function fmtDate(v) {
   if (v instanceof Date) return v.toISOString().slice(0, 10);
   return String(v == null ? '' : v).slice(0, 10);
 }
-
 function fmtDateTime(v) {
   if (v instanceof Date) return v.toISOString();
   return String(v == null ? '' : v);
 }
-
 function fmtPrice(v) {
   const n = Math.round(Number(v) || 0);
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' €';
+  return 'HK$' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-// ============ chaos toggle ============
+// ============ chaos controls (for APM demo) ============
+const chaos = {
+  db: false,
+  latency: 0,       // ms of artificial delay
+  http500: false,   // force 500 on data endpoints
+};
 
-let chaosDb = false;
+app.get('/api/chaos', (req, res) => res.json({ ...chaos }));
 
-app.post('/chaos/db/:state', (req, res) => {
-  chaosDb = req.params.state === 'on';
-  logLine('info', 'chaos_toggled', { chaosDb });
-  res.json({ chaosDb });
+app.post('/api/chaos/:key', (req, res) => {
+  const { key } = req.params;
+  if (!(key in chaos)) return res.status(400).json({ error: 'unknown chaos key' });
+  if (key === 'latency') {
+    const ms = parseInt(req.body && req.body.value, 10);
+    chaos.latency = Number.isFinite(ms) ? Math.max(0, Math.min(10000, ms)) : 0;
+  } else {
+    const state = String((req.body && req.body.state) || '').toLowerCase();
+    chaos[key] = state === 'on' || state === 'true' || state === '1';
+  }
+  logLine('info', 'chaos_toggled', { key, value: chaos[key] });
+  res.json({ ...chaos });
 });
 
-// ============ GET / — list ============
+// Backwards-compatible legacy route from the original project
+app.post('/chaos/db/:state', (req, res) => {
+  chaos.db = req.params.state === 'on';
+  res.json({ chaosDb: chaos.db });
+});
 
-app.get('/', async (req, res) => {
-  const t0 = Date.now();
+function applyChaos(req, res) {
+  if (chaos.latency > 0) {
+    // deliberately block the event loop briefly to simulate a slow dependency
+    const until = Date.now() + chaos.latency;
+    while (Date.now() < until) { /* busy wait, demo only */ }
+  }
+  if (chaos.http500) {
+    const err = new Error('Injected HTTP 500 (chaos)');
+    logLine('error', 'chaos_http500', { path: req.path });
+    res.status(500).json({ error: err.message, chaos: true });
+    return true;
+  }
+  return false;
+}
 
-  const failDb = (req.query.faildb !== undefined || chaosDb) && config.app.env !== 'prod';
-
-  let docs = null;
-  const dbStart = Date.now();
+async function failDbIfNeeded() {
+  if (!chaos.db || config.app.env === 'prod') return;
+  const sql = require('mssql');
+  const badPool = new sql.ConnectionPool({
+    server: '127.0.0.1', port: 1, database: 'nope', user: 'nope', password: 'nope',
+    connectionTimeout: 800,
+    options: { encrypt: false, trustServerCertificate: true },
+  });
   try {
-    // [DEMO] real connection failure: port 1 => ECONNREFUSED
-    if (failDb) {
-      const badPool = new sql.ConnectionPool({
-        server: '127.0.0.1',
-        port: 1,
-        database: 'nope',
-        user: 'nope',
-        password: 'nope',
-        connectionTimeout: 1000,
-        options: { encrypt: false, trustServerCertificate: true },
-      });
-      try {
-        await badPool.connect();
-        await badPool.request().query('SELECT 1');
-      } finally {
-        try { await badPool.close(); } catch (_) {}
-      }
-    }
+    await badPool.connect();
+    await badPool.request().query('SELECT 1');
+  } finally {
+    try { await badPool.close(); } catch (_) {}
+  }
+}
 
-    const p = await db();
-    const result = await p.request().query(`
-      SELECT id, reference, property_address, city, property_type, price,
-             sale_date, status, document_type, updated_at
-        FROM sale_documents
-    ORDER BY sale_date DESC
-    `);
-    docs = result.recordset;
+// ============ API: properties ============
+app.get('/api/properties', async (req, res) => {
+  if (applyChaos(req, res)) return;
+  try {
+    res.json(await store.listProperties());
+  } catch (e) {
+    logLine('error', 'properties_failed', { error: e.message });
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/api/properties/:id', async (req, res) => {
+  if (applyChaos(req, res)) return;
+  const item = await store.getProperty(req.params.id);
+  if (!item) return res.status(404).json({ error: 'Property not found' });
+  res.json(item);
+});
+
+// ============ API: sale documents ============
+app.get('/api/documents', async (req, res) => {
+  if (applyChaos(req, res)) return;
+  const t0 = Date.now();
+  try {
+    if (req.query.faildb !== undefined) chaos.db = true;
+    await failDbIfNeeded();
+    const docs = await store.listDocuments();
+    logLine('info', 'db_query', { query: 'list_sale_documents', rows: docs.length, duration_ms: Date.now() - t0 });
+    res.json(docs);
   } catch (e) {
     logLine('error', 'db_query_failed', { query: 'list_sale_documents', error: e.message });
-    res.status(500).send('Database error');
-    return;
+    res.status(500).json({ error: 'Database error', detail: e.message });
   }
-
-  logLine('info', 'db_query', {
-    query: 'list_sale_documents',
-    rows: docs.length,
-    duration_ms: Date.now() - dbStart,
-  });
-
-  const elapsed = Date.now() - t0;
-  logLine('info', 'http_request', {
-    path: '/', status: 200, rows: docs.length, duration_ms: elapsed,
-  });
-
-  const rowsHtml = docs.map(d => `
-    <tr>
-      <td><a href="/document/${esc(d.id)}">${esc(d.reference)}</a></td>
-      <td>${esc(d.property_address)}</td>
-      <td>${esc(d.city)}</td>
-      <td>${esc(d.property_type)}</td>
-      <td>${fmtPrice(d.price)}</td>
-      <td>${esc(fmtDate(d.sale_date))}</td>
-      <td><span class="badge ${esc(d.status)}">${esc(d.status)}</span></td>
-      <td>${esc(d.document_type)}</td>
-    </tr>`).join('');
-
-  res.send(`<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<title>Properties — Sale documents</title>
-<style>
-body{font-family:system-ui,sans-serif;margin:2rem;background:#f7f7f9}
-h1{margin-bottom:.25rem}
-.meta{color:#666;font-size:.85rem;margin-bottom:1.5rem}
-table{border-collapse:collapse;width:100%;background:#fff}
-th,td{padding:.55rem .75rem;border-bottom:1px solid #e5e5ea;text-align:left;font-size:.9rem}
-th{background:#f0f0f4}
-tr:hover td{background:#fafafc}
-.badge{padding:.15rem .5rem;border-radius:999px;font-size:.75rem;color:#fff}
-.completed{background:#2e7d32}.signed{background:#1565c0}
-.pending{background:#ef6c00}.draft{background:#757575}
-.cancelled{background:#c62828}
-a{color:#1565c0;text-decoration:none}
-</style></head><body>
-<h1>Sale documents</h1>
-<p class="meta">
-  ${docs.length} documents ·
-  render: ${elapsed} ms ·
-  <a href="/?faildb=1">simulate DB failure</a>
-</p>
-<table><thead><tr>
-<th>Reference</th><th>Property</th><th>City</th><th>Type</th>
-<th>Price</th><th>Sale date</th><th>Status</th><th>Document</th>
-</tr></thead><tbody>${rowsHtml}</tbody></table>
-</body></html>`);
 });
 
-// ============ GET /document/:id — detail ============
-
-app.get('/document/:id', async (req, res) => {
-  const t0 = Date.now();
+app.get('/api/documents/:id', async (req, res) => {
+  if (applyChaos(req, res)) return;
   const id = parseInt(req.params.id, 10);
-  if (!id || id <= 0) {
-    res.status(400).send('Missing or invalid id');
-    return;
-  }
-
-  let doc = null;
-  const dbStart = Date.now();
+  if (!id || id <= 0) return res.status(400).json({ error: 'Missing or invalid id' });
   try {
-    const p = await db();
-    const result = await p.request()
-      .input('id', sql.Int, id)
-      .query(`
-        SELECT id, reference, property_address, city, property_type, price,
-               sale_date, status, document_type, updated_at
-          FROM sale_documents WHERE id = @id
-      `);
-    doc = result.recordset[0] || null;
+    const doc = await store.getDocument(id);
+    if (!doc) return res.status(404).json({ error: 'Document not found' });
+    res.json(doc);
   } catch (e) {
     logLine('error', 'db_query_failed', { query: 'get_sale_document', error: e.message });
-    res.status(500).send('Database error');
-    return;
+    res.status(500).json({ error: 'Database error', detail: e.message });
   }
-
-  logLine('info', 'db_query', {
-    query: 'get_sale_document', id, found: !!doc, duration_ms: Date.now() - dbStart,
-  });
-
-  if (!doc) {
-    logLine('info', 'http_request', { path: `/document/${id}`, status: 404, id });
-    res.status(404).send('Document not found');
-    return;
-  }
-
-  const elapsed = Date.now() - t0;
-  logLine('info', 'http_request', {
-    path: `/document/${id}`, status: 200, id, duration_ms: elapsed,
-  });
-
-  res.send(`<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<title>${esc(doc.reference)}</title>
-<style>
-body{font-family:system-ui,sans-serif;margin:2rem;background:#f7f7f9}
-.card{background:#fff;padding:1.5rem 2rem;border-radius:8px;max-width:640px}
-dt{color:#666;font-size:.8rem;margin-top:1rem}
-dd{margin:.2rem 0 0;font-size:1rem}
-.meta{color:#666;font-size:.85rem;margin-top:1.5rem}
-</style></head><body>
-<div class="card">
-<h1>${esc(doc.reference)}</h1>
-<dl>
-<dt>Property</dt><dd>${esc(doc.property_address)}</dd>
-<dt>City</dt><dd>${esc(doc.city)}</dd>
-<dt>Type</dt><dd>${esc(doc.property_type)}</dd>
-<dt>Price</dt><dd>${fmtPrice(doc.price)}</dd>
-<dt>Sale date</dt><dd>${esc(fmtDate(doc.sale_date))}</dd>
-<dt>Status</dt><dd>${esc(doc.status)}</dd>
-<dt>Document type</dt><dd>${esc(doc.document_type)}</dd>
-<dt>Last update</dt><dd>${esc(fmtDateTime(doc.updated_at))}</dd>
-</dl>
-<p class="meta">
-  render: ${elapsed} ms ·
-  <a href="/">&larr; back to list</a>
-</p>
-</div></body></html>`);
 });
 
-// ============ GET /health — only DB now ============
-
-app.get('/health', async (req, res) => {
-  const result = {
-    status: 'ok',
-    checks: {
-      db: { up: false, latency_ms: null, error: null },
-    },
-  };
-
+// ============ API: health (enhanced) ============
+app.get('/api/health', async (req, res) => {
   const start = Date.now();
+  let dbCheck;
   try {
-    const p = await db();
-    await p.request().query('SELECT 1 AS ok');
-    result.checks.db.up = true;
+    await failDbIfNeeded();
+    dbCheck = { up: true, ...(await store.pingDb()) };
   } catch (e) {
-    result.checks.db.error = e.message;
+    dbCheck = { up: false, latency_ms: Date.now() - start, error: e.message };
   }
-  result.checks.db.latency_ms = Date.now() - start;
-
-  if (!result.checks.db.up) {
-    result.status = 'degraded';
-    res.status(503);
-    logLine('error', 'healthcheck_failed', result.checks);
-  }
-  res.json(result);
+  const healthy = dbCheck.up && !chaos.http500;
+  const payload = {
+    status: healthy ? 'ok' : 'degraded',
+    service: config.app.name,
+    env: config.app.env,
+    data_mode: config.data.mode,
+    uptime_s: Math.round(process.uptime()),
+    checks: {
+      db: dbCheck,
+      api: { up: !chaos.http500 },
+    },
+    chaos: { ...chaos },
+  };
+  if (!healthy) res.status(503);
+  res.json(payload);
 });
+
+// ============ API: APM telemetry ============
+app.get('/api/metrics', (req, res) => res.json(telemetry.summary()));
+app.get('/api/errors', (req, res) => res.json(telemetry.summary().recent_errors));
+app.get('/api/traces', (req, res) => res.json(telemetry.summary().recent_requests));
+
+app.post('/api/rum', (req, res) => {
+  const rec = telemetry.recordClientEvent(req.body || {});
+  res.status(201).json({ ok: true, id: rec.trace_id });
+});
+
+// ============ legacy HTML routes (kept for compatibility) ============
+app.get('/legacy', async (req, res) => {
+  let docs = [];
+  try { docs = await store.listDocuments(); } catch (_) {}
+  const rowsHtml = docs.map(d => `<tr>
+    <td><a href="/document/${esc(d.id)}">${esc(d.reference)}</a></td>
+    <td>${esc(d.property_address)}</td><td>${esc(d.city)}</td>
+    <td>${esc(d.property_type)}</td><td>${fmtPrice(d.price)}</td>
+    <td>${esc(fmtDate(d.sale_date))}</td><td>${esc(d.status)}</td>
+    <td>${esc(d.document_type)}</td></tr>`).join('');
+  res.send(`<!doctype html><html lang="en"><head><meta charset="utf-8">
+  <title>Properties — Sale documents (legacy)</title><style>
+  body{font-family:system-ui,sans-serif;margin:2rem;background:#f7f7f9}
+  table{border-collapse:collapse;width:100%;background:#fff}
+  th,td{padding:.55rem .75rem;border-bottom:1px solid #e5e5ea;text-align:left;font-size:.9rem}
+  th{background:#f0f0f4}a{color:#1565c0}
+  </style></head><body><h1>Sale documents (legacy view)</h1>
+  <p><a href="/sales.html">← New view</a></p>
+  <table><thead><tr><th>Reference</th><th>Property</th><th>City</th><th>Type</th>
+  <th>Price</th><th>Sale date</th><th>Status</th><th>Document</th></tr></thead>
+  <tbody>${rowsHtml}</tbody></table></body></html>`);
+});
+
+app.get('/document/:id', async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const doc = !isNaN(id) ? await store.getDocument(id) : null;
+  if (!doc) return res.status(404).send('Document not found');
+  res.redirect(302, `/document.html?id=${doc.id}`);
+});
+
+app.get('/health', (req, res) => res.redirect(302, '/api/health'));
+
+// ============ static frontend ============
+app.use(express.static(path.join(__dirname, '..', 'public'), {
+  index: 'index.html',
+  etag: false,
+}));
 
 // ============ boot ============
-
 const server = app.listen(config.app.port, () => {
-  logLine('info', 'server_started', { port: config.app.port, env: config.app.env });
+  logLine('info', 'server_started', {
+    port: config.app.port,
+    env: config.app.env,
+    data_mode: config.data.mode,
+  });
+  console.log(`\n  CCG Property Sales — APM Demo`);
+  console.log(`  APM Dashboard : http://localhost:${config.app.port}/`);
+  console.log(`  Sales Portal  : http://localhost:${config.app.port}/sales.html`);
+  console.log(`  Data mode     : ${config.data.mode}\n`);
 });
 
 process.on('SIGTERM', () => {
   logLine('info', 'shutting_down', {});
-  server.close(async () => {
-    await shutdown();
-    process.exit(0);
-  });
+  server.close(async () => { await store.shutdown(); process.exit(0); });
 });

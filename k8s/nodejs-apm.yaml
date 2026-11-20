@@ -1,0 +1,123 @@
+# =====================================================================
+# properties-web (NodeJS + MSSQL) — APM Demo 部署清单
+#   kubectl apply -f k8s/nodejs-apm.yaml
+#
+# 默認 DATA_MODE=memory（免 DB，可直接演示 APM + 物業銷售頁）。
+# 如要接真實 Azure SQL / MSSQL：
+#   1. 把 ConfigMap 的 DATA_MODE 改為 mssql
+#   2. 填入 DB_HOST / DB_NAME / DB_USER
+#   3. 建立 Secret（下方註解有kubectl指令），不要用明碼
+# =====================================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: properties
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: properties-node-config
+  namespace: properties
+data:
+  APP_ENV: "demo"
+  DATA_MODE: "memory"          # memory | mssql
+  PORT: "8080"
+  DB_HOST: ""
+  DB_PORT: "1433"
+  DB_NAME: ""
+  DB_USER: ""
+  DB_ENCRYPT: "1"
+  DB_TRUST_SERVER_CERT: "0"
+---
+# Secret 只在使用 DATA_MODE=mssql 時需要。
+# 建立方式（不要將密碼寫入 YAML）：
+#   kubectl -n properties create secret generic properties-node-secret \
+#     --from-literal=DB_PASSWORD='<your-password>'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: properties-node-secret
+  namespace: properties
+type: Opaque
+stringData:
+  DB_PASSWORD: ""              # 演示模式留空；正式環境用上方 kubectl 指令覆蓋
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: properties-web-node
+  namespace: properties
+  labels:
+    app: properties-web-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: properties-web-node
+  template:
+    metadata:
+      labels:
+        app: properties-web-node
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: web
+          image: docker.io/alexchui210246098/properties-web:nodejs
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef: { name: properties-node-config }
+            - secretRef:    { name: properties-node-secret }
+          resources:
+            requests: { cpu: 50m,  memory: 128Mi }
+            limits:   { cpu: 500m, memory: 512Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 2
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            failureThreshold: 30
+            periodSeconds: 5
+            timeoutSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: properties-web-node
+  namespace: properties
+spec:
+  type: LoadBalancer
+  selector:
+    app: properties-web-node
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
