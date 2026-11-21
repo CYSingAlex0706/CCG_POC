@@ -1,0 +1,127 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "correlated-chain",
+  "query": "T::`*`:(trace_id,span_id,parent_id,service,resource,span_type,status) { trace_id = \"41b7fc7e7102adbf5c4ca7198290419f\" } LIMIT 40",
+  "start_time": 1795260465414,
+  "end_time": 1795261065414,
+  "validation": {
+    "query_text": "T::`*`:(trace_id,span_id,parent_id,service,resource,span_type,status) { trace_id = \"41b7fc7e7102adbf5c4ca7198290419f\" } LIMIT 40",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795261065414,
+        "start_time": 1795260465414
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "128ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "parent_id": "bc092356f528c20f",
+          "resource": "execSql properties",
+          "service": "ccg-s1-api",
+          "span_id": "cf1b9068d6af74d7",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795261042941,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        },
+        {
+          "parent_id": "bc092356f528c20f",
+          "resource": "execSql properties",
+          "service": "ccg-s1-api",
+          "span_id": "8902d780727a641c",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795261042940,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        },
+        {
+          "parent_id": "5c4ca7198290419f",
+          "resource": "GET /api/documents",
+          "service": "ccg-s1-api",
+          "span_id": "a6699195deeb6116",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795261042940,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        },
+        {
+          "parent_id": "a6699195deeb6116",
+          "resource": "request handler - /api/documents",
+          "service": "ccg-s1-api",
+          "span_id": "bc092356f528c20f",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795261042940,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        },
+        {
+          "parent_id": "a6699195deeb6116",
+          "resource": "middleware - <anonymous>",
+          "service": "ccg-s1-api",
+          "span_id": "59bd87fc4edb7106",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795261042940,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        },
+        {
+          "parent_id": "a6699195deeb6116",
+          "resource": "middleware - jsonParser",
+          "service": "ccg-s1-api",
+          "span_id": "338fe298946e86cc",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795261042940,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        },
+        {
+          "parent_id": "a6699195deeb6116",
+          "resource": "middleware - expressInit",
+          "service": "ccg-s1-api",
+          "span_id": "be4580c4c1f5f8fd",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795261042940,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        },
+        {
+          "parent_id": "a6699195deeb6116",
+          "resource": "middleware - query",
+          "service": "ccg-s1-api",
+          "span_id": "dd1ba74b01258e05",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795261042940,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b01828e00000000f65f4fdeeb9c691c",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "resources",
+  "query": "R::resource:(trace_id,span_id,session_id,resource_url,resource_type) { app_id = \"CCG_S1_APM_RUM\" AND version = \"s1-dataway-1.1.0\" AND resource_url = \"http://150.5.141.233/api/documents\" } LIMIT 10",
+  "start_time": 1795260465414,
+  "end_time": 1795261065414,
+  "validation": {
+    "query_text": "R::resource:(trace_id,span_id,session_id,resource_url,resource_type) { app_id = \"CCG_S1_APM_RUM\" AND version = \"s1-dataway-1.1.0\" AND resource_url = \"http://150.5.141.233/api/documents\" } LIMIT 10",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795261065414,
+        "start_time": 1795260465414
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "151ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "resource_type": "fetch",
+          "resource_url": "http://150.5.141.233/api/documents",
+          "session_id": "de736f5f-08b8-4ed4-a435-8d943d6609b9",
+          "span_id": "5c4ca7198290419f",
+          "time": 1795261042893,
+          "trace_id": "41b7fc7e7102adbf5c4ca7198290419f"
+        },
+        {
+          "resource_type": "fetch",
+          "resource_url": "http://150.5.141.233/api/documents",
+          "session_id": "63bbc71a-b39e-40b8-8052-39a9bd9dc93b",
+          "span_id": "6b7cf47c1d1b54fd",
+          "time": 1795260788983,
+          "trace_id": "4003d1d279406edb6b7cf47c1d1b54fd"
+        },
+        {
+          "resource_type": "fetch",
+          "resource_url": "http://150.5.141.233/api/documents",
+          "session_id": "63bbc71a-b39e-40b8-8052-39a9bd9dc93b",
+          "span_id": "12591c84be6deabd",
+          "time": 1795260645716,
+          "trace_id": "4afa57c1664145b712591c84be6deabd"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b01828d00000000c1b2116dd338819b",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

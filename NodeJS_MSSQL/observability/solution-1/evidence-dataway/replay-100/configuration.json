@@ -1,0 +1,8 @@
+{
+  "verified_at": "2026-11-21T11:37:00.651833+00:00",
+  "sessionSampleRate": 100,
+  "sessionReplaySampleRate": 100,
+  "defaultPrivacyLevel": "mask-user-input",
+  "explicit_recording_start": true,
+  "version": "s1-dataway-1.1.0"
+}

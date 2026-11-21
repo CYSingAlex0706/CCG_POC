@@ -1,0 +1,66 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "logs-excluded",
+  "query": "L(\"*\")::`*`:(count(*)) { service = \"ccg-s1-api\" AND version = \"s1-dataway-1.1.0\" }",
+  "start_time": 1795260465414,
+  "end_time": 1795261065414,
+  "validation": {
+    "query_text": "L(\"*\")::`*`:(count(*)) { service = \"ccg-s1-api\" AND version = \"s1-dataway-1.1.0\" }",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795261065414,
+        "start_time": 1795260465414
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "237ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "count(*)": 0,
+          "time": null
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": true,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false,
+      "warnings": [
+        {
+          "code": "DQLFieldIndexMissing",
+          "details": [
+            {
+              "metadata": {
+                "field_name": "version",
+                "index_type": "inverted",
+                "reason": "auto_creation_not_supported"
+              }
+            }
+          ],
+          "message": "field \"version\" has no inverted index to accelerate the query and none can be created automatically"
+        }
+      ]
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b0182900000000082613bb291d563b9",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}
