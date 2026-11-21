@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1400" viewBox="0 0 2000 1400"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#20252b"/></marker></defs><rect width="2000" height="1400" fill="white"/>
 <text x="1000" y="64.0" font-family="Arial,Helvetica,sans-serif" font-size="41" fill="#20252b" text-anchor="middle" font-weight="700">CCG Property Sales - Application Architecture</text>
-<text x="1000" y="106.0" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#64748b" text-anchor="middle">Solution 1 | APM + RUM | main @ c047495 | Verified: 21 Nov 2026</text>
-<rect x="485" y="150" width="1470" height="1085" rx="30" fill="white" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="7 6"/>
+<text x="1000" y="106.0" font-family="Arial,Helvetica,sans-serif" font-size="19" fill="#64748b" text-anchor="middle">Solution 1 | APM + RUM | Direct DataWay | main @ c047495 | Verified: 21 Nov 2026</text>
+<rect x="485" y="150" width="1470" height="760" rx="30" fill="white" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="7 6"/>
 <text x="515" y="188.0" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#475569" text-anchor="start" font-weight="700">Single Cloud Host: 150.5.141.233 | x86_64</text>
 <rect x="525" y="225" width="300" height="495" rx="50" fill="white" stroke="#20252b" stroke-width="2"/>
 <text x="675" y="269.0" font-family="Arial,Helvetica,sans-serif" font-size="27" fill="#20252b" text-anchor="middle">Access Layer</text>
@@ -63,18 +63,18 @@
 <rect x="525" y="762" width="1390" height="64" rx="12" fill="#e8edf2" stroke="#315e83" stroke-width="2"/>
 <text x="1220" y="801.0" font-family="Arial,Helvetica,sans-serif" font-size="23" fill="#20252b" text-anchor="middle">Host OS: Ubuntu 24.04 LTS | systemd: ccg-poc | Docker Engine | Linux Network &amp; File System</text>
 <rect x="55" y="694" width="250" height="76" rx="10" fill="#eee8f7" stroke="#8e6bb0" stroke-width="2"/>
-<text x="180" y="723.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#67418c" text-anchor="middle" font-weight="700">Guance RUM SDK</text>
+<text x="180" y="723.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#67418c" text-anchor="middle" font-weight="700">RUM + Session Replay</text>
 <text x="180" y="750.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#67418c" text-anchor="middle" font-weight="700">CDN + Async</text>
 <rect x="970" y="676" width="352" height="34" rx="8" fill="#e2f0d9" stroke="#70ad47" stroke-width="2"/>
 <text x="1146" y="700.0" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#416c27" text-anchor="middle" font-weight="700">Beacon: HTTP / Express / SQL</text>
 <rect x="820" y="1080" width="440" height="106" rx="15" fill="#e2eef9" stroke="#6c8ebf" stroke-width="2"/>
-<text x="1040" y="1117.0" font-family="Arial,Helvetica,sans-serif" font-size="25" fill="#315e83" text-anchor="middle" font-weight="700">DataKit 2.19.1</text>
-<text x="1040" y="1151.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#20252b" text-anchor="middle">APM + RUM only</text>
+<text x="1040" y="1117.0" font-family="Arial,Helvetica,sans-serif" font-size="25" fill="#315e83" text-anchor="middle" font-weight="700">Guance Public DataWay</text>
+<text x="1040" y="1151.0" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#20252b" text-anchor="middle">APM + RUM + Session Replay</text>
 <path d="M180 770 L180 1138 L820 1138" fill="none" stroke="#8e6bb0" stroke-width="2" marker-end="url(#a)" stroke-dasharray="7 6"/>
-<text x="420" y="1110.0" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#67418c" text-anchor="middle">RUM via same-origin Nginx</text>
-<text x="420" y="1134.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#67418c" text-anchor="middle">/v1/write/rum</text>
+<text x="420" y="1110.0" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#67418c" text-anchor="middle">Browser HTTPS direct</text>
+<text x="420" y="1134.3" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#67418c" text-anchor="middle">cn6-rum-openway.guance.one</text>
 <path d="M970 693 L858 693 L858 1005 L1040 1005 L1040 1080" fill="none" stroke="#70ad47" stroke-width="2" marker-end="url(#a)" stroke-dasharray="7 6"/>
-<text x="1125" y="1029.0" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#416c27" text-anchor="start">OTLP / gRPC :4317</text>
+<text x="1125" y="1029.0" font-family="Arial,Helvetica,sans-serif" font-size="18" fill="#416c27" text-anchor="start">OTLP HTTP / protobuf /otel</text>
 <rect x="1490" y="984" width="405" height="174" rx="15" fill="#f6f8fa" stroke="#94a3b8" stroke-width="2"/>
 <text x="1692" y="1023.0" font-family="Arial,Helvetica,sans-serif" font-size="22" fill="#20252b" text-anchor="middle" font-weight="700">Observation Points</text>
 <text x="1692" y="1061.0" font-family="Arial,Helvetica,sans-serif" font-size="17" fill="#20252b" text-anchor="middle">Browser: RUM</text>
