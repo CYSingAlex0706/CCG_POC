@@ -1,0 +1,77 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "replay",
+  "query": "R::session_replay:(session_id,service,version) { app_id = \"CCG_S1_APM_RUM\" AND version = \"s1-dataway-1.1.0\" } LIMIT 5",
+  "start_time": 1795260465414,
+  "end_time": 1795261065414,
+  "validation": {
+    "query_text": "R::session_replay:(session_id,service,version) { app_id = \"CCG_S1_APM_RUM\" AND version = \"s1-dataway-1.1.0\" } LIMIT 5",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795261065414,
+        "start_time": 1795260465414
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "158ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "service": "ccg-s1-web",
+          "session_id": "de736f5f-08b8-4ed4-a435-8d943d6609b9",
+          "time": 1795261061201,
+          "version": "s1-dataway-1.1.0"
+        },
+        {
+          "service": "ccg-s1-web",
+          "session_id": "de736f5f-08b8-4ed4-a435-8d943d6609b9",
+          "time": 1795261055212,
+          "version": "s1-dataway-1.1.0"
+        },
+        {
+          "service": "ccg-s1-web",
+          "session_id": "de736f5f-08b8-4ed4-a435-8d943d6609b9",
+          "time": 1795261050200,
+          "version": "s1-dataway-1.1.0"
+        },
+        {
+          "service": "ccg-s1-web",
+          "session_id": "de736f5f-08b8-4ed4-a435-8d943d6609b9",
+          "time": 1795261044202,
+          "version": "s1-dataway-1.1.0"
+        },
+        {
+          "service": "ccg-s1-web",
+          "session_id": "de736f5f-08b8-4ed4-a435-8d943d6609b9",
+          "time": 1795261032199,
+          "version": "s1-dataway-1.1.0"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b018291000000008a2c3a3e342cd724",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

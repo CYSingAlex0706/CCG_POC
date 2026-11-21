@@ -1,0 +1,63 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "resources",
+  "query": "R::resource:(trace_id,span_id,session_id,resource_url,resource_type) { app_id = \"CCG_S1_APM_RUM\" AND resource_url IN [\"http://150.5.141.233/api/documents\", \"http://150.5.141.233/api/documents/1\"] } LIMIT 10",
+  "start_time": 1795224288481,
+  "end_time": 1795224888481,
+  "validation": {
+    "query_text": "R::resource:(trace_id,span_id,session_id,resource_url,resource_type) { app_id = \"CCG_S1_APM_RUM\" AND resource_url IN [\"http://150.5.141.233/api/documents\", \"http://150.5.141.233/api/documents/1\"] } LIMIT 10",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795224888481,
+        "start_time": 1795224288481
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "149ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "resource_type": "fetch",
+          "resource_url": "http://150.5.141.233/api/documents",
+          "session_id": "29f5e49a-2620-4da7-aca9-e821ce054fb4",
+          "span_id": "5411f51994fea04d",
+          "time": 1795224592898,
+          "trace_id": "472f3fc6e7a4d6f25411f51994fea04d"
+        },
+        {
+          "resource_type": "fetch",
+          "resource_url": "http://150.5.141.233/api/documents",
+          "session_id": "29f5e49a-2620-4da7-aca9-e821ce054fb4",
+          "span_id": "6e2c4a12a1a923d8",
+          "time": 1795224565812,
+          "trace_id": "16d5c157a18b54386e2c4a12a1a923d8"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b00f53a000000002e1da93b5b3cbe32",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

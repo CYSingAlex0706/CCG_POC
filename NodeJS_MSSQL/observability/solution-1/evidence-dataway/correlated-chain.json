@@ -1,0 +1,137 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "correlated-chain",
+  "query": "T::`*`:(trace_id,span_id,parent_id,service,resource,span_type,status) { trace_id = \"3542f9ecc142db6b5009f4ae6e0b95b1\" } LIMIT 40",
+  "start_time": 1795258639167,
+  "end_time": 1795259239167,
+  "validation": {
+    "query_text": "T::`*`:(trace_id,span_id,parent_id,service,resource,span_type,status) { trace_id = \"3542f9ecc142db6b5009f4ae6e0b95b1\" } LIMIT 40",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795259239167,
+        "start_time": 1795258639167
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "135ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "parent_id": "71b14674e2d88702",
+          "resource": "execSql properties",
+          "service": "ccg-s1-api",
+          "span_id": "f2bae729962476d5",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795259204561,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        },
+        {
+          "parent_id": "71b14674e2d88702",
+          "resource": "execSql properties",
+          "service": "ccg-s1-api",
+          "span_id": "683347f60e333309",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795259204560,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        },
+        {
+          "parent_id": "5009f4ae6e0b95b1",
+          "resource": "GET /api/documents",
+          "service": "ccg-s1-api",
+          "span_id": "d8ca91476b362bf2",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795259204559,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        },
+        {
+          "parent_id": "d8ca91476b362bf2",
+          "resource": "request handler - /api/documents",
+          "service": "ccg-s1-api",
+          "span_id": "71b14674e2d88702",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795259204559,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        },
+        {
+          "parent_id": "d8ca91476b362bf2",
+          "resource": "middleware - <anonymous>",
+          "service": "ccg-s1-api",
+          "span_id": "59ca325e12718738",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795259204559,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        },
+        {
+          "parent_id": "d8ca91476b362bf2",
+          "resource": "middleware - jsonParser",
+          "service": "ccg-s1-api",
+          "span_id": "a16a32bfd7a9d7ff",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795259204559,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        },
+        {
+          "parent_id": "d8ca91476b362bf2",
+          "resource": "middleware - expressInit",
+          "service": "ccg-s1-api",
+          "span_id": "77a32f208944df6f",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795259204559,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        },
+        {
+          "parent_id": "d8ca91476b362bf2",
+          "resource": "middleware - query",
+          "service": "ccg-s1-api",
+          "span_id": "ae9cd23a491ac119",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795259204559,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        },
+        {
+          "parent_id": "0",
+          "resource": "/api/documents",
+          "service": "ccg-s1-web",
+          "span_id": "5009f4ae6e0b95b1",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795259204543,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b017b6b00000000efc45843c1f6cd99",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

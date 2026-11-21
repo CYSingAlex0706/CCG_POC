@@ -1,0 +1,155 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "apm",
+  "query": "T::`*`:(count(*)) { service = \"ccg-s1-api\" AND version = \"s1-dataway-1.0.0\" } BY service, resource",
+  "start_time": 1795258639167,
+  "end_time": 1795259239167,
+  "validation": {
+    "query_text": "T::`*`:(count(*)) { service = \"ccg-s1-api\" AND version = \"s1-dataway-1.0.0\" } BY service, resource",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795259239167,
+        "start_time": 1795258639167
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "151ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "count(*)": 20,
+          "resource": "request handler - /api/health",
+          "service": "ccg-s1-api",
+          "time": 1795259221280
+        },
+        {
+          "count(*)": 3,
+          "resource": "request handler - /api/metrics",
+          "service": "ccg-s1-api",
+          "time": 1795259191305
+        },
+        {
+          "count(*)": 59,
+          "resource": "middleware - jsonParser",
+          "service": "ccg-s1-api",
+          "time": 1795259221280
+        },
+        {
+          "count(*)": 2,
+          "resource": "request handler - /api/documents",
+          "service": "ccg-s1-api",
+          "time": 1795259204559
+        },
+        {
+          "count(*)": 24,
+          "resource": "POST /api/rum",
+          "service": "ccg-s1-api",
+          "time": 1795259216307
+        },
+        {
+          "count(*)": 2,
+          "resource": "POST",
+          "service": "ccg-s1-api",
+          "time": 1795259162305
+        },
+        {
+          "count(*)": 44,
+          "resource": "execSql properties",
+          "service": "ccg-s1-api",
+          "time": 1795259221281
+        },
+        {
+          "count(*)": 24,
+          "resource": "request handler - /api/rum",
+          "service": "ccg-s1-api",
+          "time": 1795259216308
+        },
+        {
+          "count(*)": 20,
+          "resource": "GET /api/health",
+          "service": "ccg-s1-api",
+          "time": 1795259221279
+        },
+        {
+          "count(*)": 2,
+          "resource": "GET /api/documents",
+          "service": "ccg-s1-api",
+          "time": 1795259204559
+        },
+        {
+          "count(*)": 59,
+          "resource": "middleware - <anonymous>",
+          "service": "ccg-s1-api",
+          "time": 1795259221280
+        },
+        {
+          "count(*)": 59,
+          "resource": "middleware - query",
+          "service": "ccg-s1-api",
+          "time": 1795259221279
+        },
+        {
+          "count(*)": 8,
+          "resource": "middleware - serveStatic",
+          "service": "ccg-s1-api",
+          "time": 1795259162305
+        },
+        {
+          "count(*)": 59,
+          "resource": "middleware - expressInit",
+          "service": "ccg-s1-api",
+          "time": 1795259221279
+        },
+        {
+          "count(*)": 3,
+          "resource": "GET /api/metrics",
+          "service": "ccg-s1-api",
+          "time": 1795259191304
+        },
+        {
+          "count(*)": 2,
+          "resource": "request handler - /api/properties",
+          "service": "ccg-s1-api",
+          "time": 1795259204558
+        },
+        {
+          "count(*)": 2,
+          "resource": "GET /api/properties",
+          "service": "ccg-s1-api",
+          "time": 1795259204558
+        },
+        {
+          "count(*)": 6,
+          "resource": "GET",
+          "service": "ccg-s1-api",
+          "time": 1795259156227
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b017b68000000006081e83a7b45ee29",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}
