@@ -1,0 +1,147 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "correlated-chain",
+  "query": "T::`*`:(trace_id,span_id,parent_id,service,resource,span_type,status) { trace_id = \"556f1229bf568c7d27f7831f7c58ae1c\" } LIMIT 40",
+  "start_time": 1795266435541,
+  "end_time": 1795267335541,
+  "validation": {
+    "query_text": "T::`*`:(trace_id,span_id,parent_id,service,resource,span_type,status) { trace_id = \"556f1229bf568c7d27f7831f7c58ae1c\" } LIMIT 40",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795267335541,
+        "start_time": 1795266435541
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "147ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "parent_id": "b357496025dee5fa",
+          "resource": "execSql properties",
+          "service": "ccg-s2-api",
+          "span_id": "d667a3082b7cd428",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795266968119,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "b357496025dee5fa",
+          "resource": "execSql properties",
+          "service": "ccg-s2-api",
+          "span_id": "bb42445be92760ef",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795266968118,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "63b367ab7d5c9864",
+          "resource": "GET /api/documents",
+          "service": "ccg-s2-api",
+          "span_id": "37f3b346ebc81aaf",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795266968117,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "37f3b346ebc81aaf",
+          "resource": "request handler - /api/documents",
+          "service": "ccg-s2-api",
+          "span_id": "b357496025dee5fa",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795266968117,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "37f3b346ebc81aaf",
+          "resource": "middleware - <anonymous>",
+          "service": "ccg-s2-api",
+          "span_id": "688742da6bf395bc",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795266968117,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "37f3b346ebc81aaf",
+          "resource": "middleware - jsonParser",
+          "service": "ccg-s2-api",
+          "span_id": "d8af511fdd5886e5",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795266968117,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "37f3b346ebc81aaf",
+          "resource": "middleware - expressInit",
+          "service": "ccg-s2-api",
+          "span_id": "2006702a770a8662",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795266968117,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "37f3b346ebc81aaf",
+          "resource": "middleware - query",
+          "service": "ccg-s2-api",
+          "span_id": "535f571e661dd3bd",
+          "span_type": null,
+          "status": "ok",
+          "time": 1795266968117,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "27f7831f7c58ae1c",
+          "resource": "GET /api/documents",
+          "service": "ccg-s2-nginx",
+          "span_id": "63b367ab7d5c9864",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795266968115,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        },
+        {
+          "parent_id": "0",
+          "resource": "/api/documents",
+          "service": "ccg-s2-web",
+          "span_id": "27f7831f7c58ae1c",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795266967403,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b019b0800000000f05aef577c33ac48",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

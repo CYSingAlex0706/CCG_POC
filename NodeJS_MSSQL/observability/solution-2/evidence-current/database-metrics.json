@@ -1,0 +1,52 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "database-metrics",
+  "query": "M::sqlserver_metric:(last(user_connections),last(server_memory)) { service = \"ccg-s2-sqlserver\" }",
+  "start_time": 1795266341301,
+  "end_time": 1795267241301,
+  "validation": {
+    "query_text": "M::sqlserver_metric:(last(user_connections),last(server_memory)) { service = \"ccg-s2-sqlserver\" }",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795267241301,
+        "start_time": 1795266341301
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "10ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "last(server_memory)": 2097152,
+          "last(user_connections)": 3,
+          "time": 1795267235172
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b019ab40000000018791d0bb7655391",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

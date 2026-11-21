@@ -1,0 +1,251 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "apm",
+  "query": "T::`*`:(count(*)) { service IN [\"ccg-s2-api\",\"ccg-s2-web\",\"ccg-s2-nginx\"] AND version = \"s2-dataway-1.1.0\" } BY service, resource",
+  "start_time": 1795266341301,
+  "end_time": 1795267241301,
+  "validation": {
+    "query_text": "T::`*`:(count(*)) { service IN [\"ccg-s2-api\",\"ccg-s2-web\",\"ccg-s2-nginx\"] AND version = \"s2-dataway-1.1.0\" } BY service, resource",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795267241301,
+        "start_time": 1795266341301
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "144ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "count(*)": 10,
+          "resource": "GET /api/metrics",
+          "service": "ccg-s2-api",
+          "time": 1795267171348
+        },
+        {
+          "count(*)": 2,
+          "resource": "GET /api/properties",
+          "service": "ccg-s2-api",
+          "time": 1795266968093
+        },
+        {
+          "count(*)": 2,
+          "resource": "GET /api/documents",
+          "service": "ccg-s2-api",
+          "time": 1795266968117
+        },
+        {
+          "count(*)": 73,
+          "resource": "/api/health",
+          "service": "ccg-s2-web",
+          "time": 1795267214630
+        },
+        {
+          "count(*)": 2,
+          "resource": "request handler - /api/properties",
+          "service": "ccg-s2-api",
+          "time": 1795266968093
+        },
+        {
+          "count(*)": 316,
+          "resource": "middleware - jsonParser",
+          "service": "ccg-s2-api",
+          "time": 1795267210349
+        },
+        {
+          "count(*)": 81,
+          "resource": "middleware - serveStatic",
+          "service": "ccg-s2-api",
+          "time": 1795266850188
+        },
+        {
+          "count(*)": 117,
+          "resource": "POST /api/rum",
+          "service": "ccg-s2-api",
+          "time": 1795267210349
+        },
+        {
+          "count(*)": 104,
+          "resource": "request handler - /api/health",
+          "service": "ccg-s2-api",
+          "time": 1795267210312
+        },
+        {
+          "count(*)": 55,
+          "resource": "GET",
+          "service": "ccg-s2-api",
+          "time": 1795266850188
+        },
+        {
+          "count(*)": 104,
+          "resource": "GET /api/health",
+          "service": "ccg-s2-api",
+          "time": 1795267210312
+        },
+        {
+          "count(*)": 26,
+          "resource": "GET /sales.html",
+          "service": "ccg-s2-nginx",
+          "time": 1795266850113
+        },
+        {
+          "count(*)": 1,
+          "resource": "GET /__rumable__/ccg-s2-dataway/init.7bbc6599e3a7e02069aa92da49d1b171a18fd9ed9437a2626c8ceb371480b643.js",
+          "service": "ccg-s2-nginx",
+          "time": 1795266691752
+        },
+        {
+          "count(*)": 2,
+          "resource": "/api/documents",
+          "service": "ccg-s2-web",
+          "time": 1795267215634
+        },
+        {
+          "count(*)": 25,
+          "resource": "GET /document.html",
+          "service": "ccg-s2-nginx",
+          "time": 1795266693577
+        },
+        {
+          "count(*)": 212,
+          "resource": "execSql properties",
+          "service": "ccg-s2-api",
+          "time": 1795267210313
+        },
+        {
+          "count(*)": 1,
+          "resource": "GET /js/sales.js",
+          "service": "ccg-s2-nginx",
+          "time": 1795266850181
+        },
+        {
+          "count(*)": 3,
+          "resource": "GET /api/properties",
+          "service": "ccg-s2-nginx",
+          "time": 1795267216312
+        },
+        {
+          "count(*)": 1,
+          "resource": "GET /js/rum.js",
+          "service": "ccg-s2-nginx",
+          "time": 1795266850188
+        },
+        {
+          "count(*)": 316,
+          "resource": "middleware - <anonymous>",
+          "service": "ccg-s2-api",
+          "time": 1795267210349
+        },
+        {
+          "count(*)": 2,
+          "resource": "request handler - /api/documents",
+          "service": "ccg-s2-api",
+          "time": 1795266968117
+        },
+        {
+          "count(*)": 1,
+          "resource": "GET /app.css",
+          "service": "ccg-s2-nginx",
+          "time": 1795266850182
+        },
+        {
+          "count(*)": 117,
+          "resource": "request handler - /api/rum",
+          "service": "ccg-s2-api",
+          "time": 1795267210349
+        },
+        {
+          "count(*)": 9,
+          "resource": "GET /api/metrics",
+          "service": "ccg-s2-nginx",
+          "time": 1795267171347
+        },
+        {
+          "count(*)": 26,
+          "resource": "GET /",
+          "service": "ccg-s2-api",
+          "time": 1795266693511
+        },
+        {
+          "count(*)": 316,
+          "resource": "middleware - expressInit",
+          "service": "ccg-s2-api",
+          "time": 1795267210349
+        },
+        {
+          "count(*)": 2,
+          "resource": "/api/properties",
+          "service": "ccg-s2-web",
+          "time": 1795267215634
+        },
+        {
+          "count(*)": 104,
+          "resource": "GET /api/health",
+          "service": "ccg-s2-nginx",
+          "time": 1795267230310
+        },
+        {
+          "count(*)": 119,
+          "resource": "POST /api/rum",
+          "service": "ccg-s2-nginx",
+          "time": 1795267230337
+        },
+        {
+          "count(*)": 76,
+          "resource": "/api/rum",
+          "service": "ccg-s2-web",
+          "time": 1795267215691
+        },
+        {
+          "count(*)": 3,
+          "resource": "GET /api/documents",
+          "service": "ccg-s2-nginx",
+          "time": 1795267216345
+        },
+        {
+          "count(*)": 10,
+          "resource": "request handler - /api/metrics",
+          "service": "ccg-s2-api",
+          "time": 1795267171348
+        },
+        {
+          "count(*)": 316,
+          "resource": "middleware - query",
+          "service": "ccg-s2-api",
+          "time": 1795267210349
+        },
+        {
+          "count(*)": 26,
+          "resource": "GET /",
+          "service": "ccg-s2-nginx",
+          "time": 1795266693511
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b019aaa00000000f128674a7b7ddea1",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}
