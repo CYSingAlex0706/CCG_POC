@@ -1,0 +1,87 @@
+{
+  "checked_at": "2026-11-21T09:44:12.632002+08:00",
+  "checks": [
+    {
+      "path": "/",
+      "http_status": 200
+    },
+    {
+      "path": "/sales.html",
+      "http_status": 200
+    },
+    {
+      "path": "/property.html?id=zendo-house",
+      "http_status": 200
+    },
+    {
+      "path": "/document.html?id=1",
+      "http_status": 200
+    },
+    {
+      "path": "/api/health",
+      "http_status": 200,
+      "body": {
+        "status": "ok",
+        "service": "Chinachem Property Sales — APM Demo",
+        "env": "local",
+        "data_mode": "mssql",
+        "uptime_s": 997,
+        "checks": {
+          "db": {
+            "up": true,
+            "latency_ms": 2,
+            "mode": "mssql"
+          },
+          "api": {
+            "up": true
+          }
+        },
+        "chaos": {
+          "db": false,
+          "latency": 0,
+          "http500": false
+        }
+      }
+    },
+    {
+      "path": "/api/documents",
+      "http_status": 200
+    },
+    {
+      "path": "/api/properties",
+      "http_status": 200
+    },
+    {
+      "path": "/api/documents/1",
+      "http_status": 200
+    },
+    {
+      "path": "/api/documents/2",
+      "http_status": 200
+    },
+    {
+      "path": "/api/documents/3",
+      "http_status": 200
+    },
+    {
+      "path": "/api/documents/4",
+      "http_status": 200
+    },
+    {
+      "path": "/api/documents/5",
+      "http_status": 200
+    },
+    {
+      "path": "/api/documents/6",
+      "http_status": 200
+    },
+    {
+      "path": "/api/documents/7",
+      "http_status": 200
+    },
+    {
+      "path": "/api/documents/8",
+      "http_status": 200
+    }
+  ]
+}

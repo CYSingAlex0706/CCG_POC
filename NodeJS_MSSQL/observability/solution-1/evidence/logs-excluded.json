@@ -1,0 +1,51 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "logs-excluded",
+  "query": "L(\"*\")::`*`:(count(*)) { service IN [\"ccg-s1-api\", \"ccg-s1-web\"] }",
+  "start_time": 1795224288481,
+  "end_time": 1795224888481,
+  "validation": {
+    "query_text": "L(\"*\")::`*`:(count(*)) { service IN [\"ccg-s1-api\", \"ccg-s1-web\"] }",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795224888481,
+        "start_time": 1795224288481
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "137ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "count(*)": 0,
+          "time": null
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b00f53900000000d08089fd91551df2",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

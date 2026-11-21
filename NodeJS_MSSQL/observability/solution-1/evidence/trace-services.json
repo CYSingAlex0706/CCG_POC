@@ -1,0 +1,209 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "trace-services",
+  "query": "T::`*`:(count(*)) { service IN [\"ccg-s1-api\", \"ccg-s1-web\"] } BY service, resource",
+  "start_time": 1795224288481,
+  "end_time": 1795224888481,
+  "validation": {
+    "query_text": "T::`*`:(count(*)) { service IN [\"ccg-s1-api\", \"ccg-s1-web\"] } BY service, resource",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795224888481,
+        "start_time": 1795224288481
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "145ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "count(*)": 1,
+          "resource": "GET /api/documents/:id",
+          "service": "ccg-s1-api",
+          "time": 1795224650876
+        },
+        {
+          "count(*)": 55,
+          "resource": "request handler - /api/health",
+          "service": "ccg-s1-api",
+          "time": 1795224824992
+        },
+        {
+          "count(*)": 23,
+          "resource": "request handler - /api/metrics",
+          "service": "ccg-s1-api",
+          "time": 1795224824691
+        },
+        {
+          "count(*)": 182,
+          "resource": "middleware - jsonParser",
+          "service": "ccg-s1-api",
+          "time": 1795224825278
+        },
+        {
+          "count(*)": 2,
+          "resource": "request handler - /api/documents",
+          "service": "ccg-s1-api",
+          "time": 1795224593129
+        },
+        {
+          "count(*)": 83,
+          "resource": "POST /api/rum",
+          "service": "ccg-s1-api",
+          "time": 1795224825278
+        },
+        {
+          "count(*)": 116,
+          "resource": "execSql properties",
+          "service": "ccg-s1-api",
+          "time": 1795224824993
+        },
+        {
+          "count(*)": 56,
+          "resource": "/api/rum",
+          "service": "ccg-s1-web",
+          "time": 1795224651649
+        },
+        {
+          "count(*)": 83,
+          "resource": "request handler - /api/rum",
+          "service": "ccg-s1-api",
+          "time": 1795224825279
+        },
+        {
+          "count(*)": 55,
+          "resource": "GET /api/health",
+          "service": "ccg-s1-api",
+          "time": 1795224824992
+        },
+        {
+          "count(*)": 2,
+          "resource": "GET /api/documents",
+          "service": "ccg-s1-api",
+          "time": 1795224593128
+        },
+        {
+          "count(*)": 1,
+          "resource": "request handler - /api/documents/:id",
+          "service": "ccg-s1-api",
+          "time": 1795224650877
+        },
+        {
+          "count(*)": 1,
+          "resource": "GET /api/chaos",
+          "service": "ccg-s1-api",
+          "time": 1795224538040
+        },
+        {
+          "count(*)": 182,
+          "resource": "middleware - <anonymous>",
+          "service": "ccg-s1-api",
+          "time": 1795224825279
+        },
+        {
+          "count(*)": 182,
+          "resource": "middleware - query",
+          "service": "ccg-s1-api",
+          "time": 1795224825278
+        },
+        {
+          "count(*)": 15,
+          "resource": "middleware - serveStatic",
+          "service": "ccg-s1-api",
+          "time": 1795224650593
+        },
+        {
+          "count(*)": 182,
+          "resource": "middleware - expressInit",
+          "service": "ccg-s1-api",
+          "time": 1795224825278
+        },
+        {
+          "count(*)": 13,
+          "resource": "/api/metrics",
+          "service": "ccg-s1-web",
+          "time": 1795224563743
+        },
+        {
+          "count(*)": 23,
+          "resource": "GET /api/metrics",
+          "service": "ccg-s1-api",
+          "time": 1795224824691
+        },
+        {
+          "count(*)": 2,
+          "resource": "GET /",
+          "service": "ccg-s1-api",
+          "time": 1795224536998
+        },
+        {
+          "count(*)": 1,
+          "resource": "request handler - /api/chaos",
+          "service": "ccg-s1-api",
+          "time": 1795224538041
+        },
+        {
+          "count(*)": 2,
+          "resource": "/api/properties",
+          "service": "ccg-s1-web",
+          "time": 1795224592898
+        },
+        {
+          "count(*)": 2,
+          "resource": "/api/documents",
+          "service": "ccg-s1-web",
+          "time": 1795224592898
+        },
+        {
+          "count(*)": 2,
+          "resource": "request handler - /api/properties",
+          "service": "ccg-s1-api",
+          "time": 1795224593130
+        },
+        {
+          "count(*)": 2,
+          "resource": "GET /api/properties",
+          "service": "ccg-s1-api",
+          "time": 1795224593129
+        },
+        {
+          "count(*)": 13,
+          "resource": "GET",
+          "service": "ccg-s1-api",
+          "time": 1795224650593
+        },
+        {
+          "count(*)": 36,
+          "resource": "/api/health",
+          "service": "ccg-s1-web",
+          "time": 1795224645814
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b00f539000000002277d5b81e2d623c",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}
