@@ -1,0 +1,119 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "views",
+  "query": "R::view:(session_id,session_has_replay,session_replay_sample_rate,session_sample_rate,version,view_url) { app_id = \"CCG_S2_FULLSTACK\" } LIMIT 20",
+  "start_time": 1795268280000,
+  "end_time": 1795269922795,
+  "validation": {
+    "query_text": "R::view:(session_id,session_has_replay,session_replay_sample_rate,session_sample_rate,version,view_url) { app_id = \"CCG_S2_FULLSTACK\" } LIMIT 20",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795269922795,
+        "start_time": 1795268280000
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "150ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "session_has_replay": null,
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "session_replay_sample_rate": 100,
+          "session_sample_rate": 100,
+          "time": 1795268630625,
+          "version": "s2-dataway-1.1.0",
+          "view_url": "http://150.5.141.233/sales.html"
+        },
+        {
+          "session_has_replay": 1,
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "session_replay_sample_rate": 100,
+          "session_sample_rate": 100,
+          "time": 1795268627708,
+          "version": "s2-dataway-1.1.0",
+          "view_url": "http://150.5.141.233/"
+        },
+        {
+          "session_has_replay": null,
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "session_replay_sample_rate": 100,
+          "session_sample_rate": 100,
+          "time": 1795268625883,
+          "version": "s2-dataway-1.1.0",
+          "view_url": "http://150.5.141.233/property.html?id=in-one"
+        },
+        {
+          "session_has_replay": null,
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "session_replay_sample_rate": 100,
+          "session_sample_rate": 100,
+          "time": 1795268623959,
+          "version": "s2-dataway-1.1.0",
+          "view_url": "http://150.5.141.233/sales.html"
+        },
+        {
+          "session_has_replay": null,
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "session_replay_sample_rate": 100,
+          "session_sample_rate": 100,
+          "time": 1795268622075,
+          "version": "s2-dataway-1.1.0",
+          "view_url": "http://150.5.141.233/property.html?id=zendo-house"
+        },
+        {
+          "session_has_replay": null,
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "session_replay_sample_rate": 100,
+          "session_sample_rate": 100,
+          "time": 1795268620918,
+          "version": "s2-dataway-1.1.0",
+          "view_url": "http://150.5.141.233/sales.html"
+        },
+        {
+          "session_has_replay": null,
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "session_replay_sample_rate": 100,
+          "session_sample_rate": 100,
+          "time": 1795268620160,
+          "version": "s2-dataway-1.1.0",
+          "view_url": "http://150.5.141.233/"
+        },
+        {
+          "session_has_replay": null,
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "session_replay_sample_rate": 100,
+          "session_sample_rate": 100,
+          "time": 1795268600160,
+          "version": "s2-dataway-1.1.0",
+          "view_url": "http://150.5.141.233/"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b01a5260000000037effb9fc3cb2575",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

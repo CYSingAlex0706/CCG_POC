@@ -1,0 +1,187 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "replay",
+  "query": "R::session_replay:(session_id,view_id,version,service) { app_id = \"CCG_S2_FULLSTACK\" } LIMIT 20",
+  "start_time": 1795268280000,
+  "end_time": 1795269922795,
+  "validation": {
+    "query_text": "R::session_replay:(session_id,view_id,version,service) { app_id = \"CCG_S2_FULLSTACK\" } LIMIT 20",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795269922795,
+        "start_time": 1795268280000
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "150ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269911404,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269906364,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269900562,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269895409,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269890369,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269884413,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269879398,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269874373,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269868541,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269863524,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269858417,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269853401,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269848371,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269842399,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269836397,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269830403,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269824598,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269819397,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269813549,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        },
+        {
+          "service": "ccg-s2-web",
+          "session_id": "8d8caf48-0e29-4853-89b6-b6a649f22642",
+          "time": 1795269808536,
+          "version": "s2-dataway-1.1.0",
+          "view_id": "abbd359d-5dec-4660-af9f-afba17188c70"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b01a5280000000056136c69db476e0a",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}
