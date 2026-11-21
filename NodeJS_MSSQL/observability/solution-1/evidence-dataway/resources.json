@@ -1,0 +1,55 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "resources",
+  "query": "R::resource:(trace_id,span_id,session_id,resource_url,resource_type) { app_id = \"CCG_S1_APM_RUM\" AND version = \"s1-dataway-1.0.0\" AND resource_url = \"http://150.5.141.233/api/documents\" } LIMIT 10",
+  "start_time": 1795258639167,
+  "end_time": 1795259239167,
+  "validation": {
+    "query_text": "R::resource:(trace_id,span_id,session_id,resource_url,resource_type) { app_id = \"CCG_S1_APM_RUM\" AND version = \"s1-dataway-1.0.0\" AND resource_url = \"http://150.5.141.233/api/documents\" } LIMIT 10",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795259239167,
+        "start_time": 1795258639167
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "157ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "resource_type": "fetch",
+          "resource_url": "http://150.5.141.233/api/documents",
+          "session_id": "63bbc71a-b39e-40b8-8052-39a9bd9dc93b",
+          "span_id": "5009f4ae6e0b95b1",
+          "time": 1795259204543,
+          "trace_id": "3542f9ecc142db6b5009f4ae6e0b95b1"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b017b6a000000009295c1148f8344e8",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

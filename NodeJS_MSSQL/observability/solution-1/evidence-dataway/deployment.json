@@ -1,0 +1,36 @@
+{
+  "at": "2026-11-21T11:11:13.753738+00:00",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/sales.html",
+      "status": 200
+    },
+    {
+      "path": "/property.html?id=zendo-house",
+      "status": 200
+    },
+    {
+      "path": "/document.html?id=1",
+      "status": 200
+    },
+    {
+      "path": "/api/health",
+      "status": 200
+    },
+    {
+      "path": "/api/documents",
+      "status": 200
+    },
+    {
+      "path": "/api/documents/1",
+      "status": 200
+    }
+  ],
+  "server_status": "active\nactive\ninactive\ndisabled\nnginx: the configuration file /etc/nginx/nginx.conf syntax is ok\nnginx: configuration file /etc/nginx/nginx.conf test is successful\n",
+  "transport": "Direct DataWay HTTP/protobuf and public browser intake",
+  "pr_updated": false
+}
