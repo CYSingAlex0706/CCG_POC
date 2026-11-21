@@ -1,0 +1,146 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "correlated-chain",
+  "query": "T::`*`:(trace_id,span_id,parent_id,service,resource,span_type,status,message) { trace_id = \"3172b13d9b66563556bc3a2e40731094\" } LIMIT 40",
+  "start_time": 1795233377771,
+  "end_time": 1795234277771,
+  "validation": {
+    "query_text": "T::`*`:(trace_id,span_id,parent_id,service,resource,span_type,status,message) { trace_id = \"3172b13d9b66563556bc3a2e40731094\" } LIMIT 40",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795234277771,
+        "start_time": 1795233377771
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "144ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"execSql properties\",\"service\":\"ccg-s2-api\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "2b069e8cca30b25e",
+          "resource": "execSql properties",
+          "service": "ccg-s2-api",
+          "span_id": "942c16ab60db72ae",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795234042083,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"request handler - /api/documents/:id\",\"service\":\"ccg-s2-api\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "2e64645414ad4571",
+          "resource": "request handler - /api/documents/:id",
+          "service": "ccg-s2-api",
+          "span_id": "2b069e8cca30b25e",
+          "span_type": "local",
+          "status": "ok",
+          "time": 1795234042080,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"middleware - \\u003canonymous\\u003e\",\"service\":\"ccg-s2-api\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "2e64645414ad4571",
+          "resource": "middleware - <anonymous>",
+          "service": "ccg-s2-api",
+          "span_id": "a35709b2ce669a01",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795234042080,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"middleware - jsonParser\",\"service\":\"ccg-s2-api\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "2e64645414ad4571",
+          "resource": "middleware - jsonParser",
+          "service": "ccg-s2-api",
+          "span_id": "1780eeac6de4d521",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795234042080,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"middleware - expressInit\",\"service\":\"ccg-s2-api\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "2e64645414ad4571",
+          "resource": "middleware - expressInit",
+          "service": "ccg-s2-api",
+          "span_id": "ab46b7c0eaaab262",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795234042080,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"middleware - query\",\"service\":\"ccg-s2-api\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "2e64645414ad4571",
+          "resource": "middleware - query",
+          "service": "ccg-s2-api",
+          "span_id": "3bb2fc0270e81ebf",
+          "span_type": "exit",
+          "status": "ok",
+          "time": 1795234042080,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"GET /api/documents/:id\",\"service\":\"ccg-s2-api\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "aa5dc04085db33aa",
+          "resource": "GET /api/documents/:id",
+          "service": "ccg-s2-api",
+          "span_id": "2e64645414ad4571",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795234042079,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        },
+        {
+          "message": "{\"host\":\"CCG-Mock-APM\",\"resource\":\"GET /api/documents/:id\",\"service\":\"ccg-s2-nginx\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "56bc3a2e40731094",
+          "resource": "GET /api/documents/:id",
+          "service": "ccg-s2-nginx",
+          "span_id": "aa5dc04085db33aa",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795234042078,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        },
+        {
+          "message": "{\"resource\":\"/api/documents/1\",\"service\":\"ccg-s2-web\",\"trace_id\":\"3172b13d9b66563556bc3a2e40731094\"}",
+          "parent_id": "0",
+          "resource": "/api/documents/1",
+          "service": "ccg-s2-web",
+          "span_id": "56bc3a2e40731094",
+          "span_type": "entry",
+          "status": "ok",
+          "time": 1795234040856,
+          "trace_id": "3172b13d9b66563556bc3a2e40731094"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b0119e9000000005d89c095d851446f",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

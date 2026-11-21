@@ -1,0 +1,9 @@
+{
+  "name": "ccg-zero-code-observability-agent",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@beacon-observability/nodejs": "2.0.2",
+    "@opentelemetry/api": "1.9.0"
+  }
+}

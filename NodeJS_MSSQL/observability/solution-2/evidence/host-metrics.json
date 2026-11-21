@@ -1,0 +1,51 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "host-metrics",
+  "query": "M::cpu:(last(usage_total)) { solution = \"s2\" }",
+  "start_time": 1795233187059,
+  "end_time": 1795234087059,
+  "validation": {
+    "query_text": "M::cpu:(last(usage_total)) { solution = \"s2\" }",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795234087059,
+        "start_time": 1795233187059
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "5ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "last(usage_total)": 0.751126690036,
+          "time": 1795234085560
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b01193000000000076d47fc9491cfcd",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}
