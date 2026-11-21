@@ -1,35 +1,30 @@
-# Solution 1 — Minimal APM and CDN Async RUM
+# Solution 1 — application changes for APM, RUM and session replay
 
-This independent branch starts from upstream main `c047495`. It adds Guance APM and browser RUM to the existing MSSQL deployment. Business JavaScript under `src/`, SQL statements and the customer's custom `rum.js` / `telemetry.js` are unchanged.
+This document compares the implementation with the customer's original MSSQL application at upstream main `c0474954a0f99882d0a468ec6557daedcfa76a25`. Deployment version: `s1-dataway-1.1.0`. Customer-reviewed implementation for Solution 1.
 
-![Solution 1 observation points](architecture/solution.png)
+## Architecture
 
-[Editable draw.io](architecture/solution.drawio) · [SVG](architecture/solution.svg) · [Before integration](architecture/baseline.png)
+Business traffic: browser → Nginx → Node.js/Express → Microsoft SQL Server 2022. Browser telemetry and replay go directly to the Hong Kong RUM public DataWay; Beacon traces go directly to the Hong Kong OTLP DataWay. Workspace: `chinachemgroup_poc`.
 
-## Exact change surface
+![Architecture and observation points](architecture/solution.png)
 
-| File | Change | Reason |
-| --- | --- | --- |
-| `package.json` | Add `@beacon-observability/nodejs` 2.0.2 | Install the automatic backend agent |
-| `package-lock.json` | Resolve and pin the agent dependency tree | Reproducible installation |
-| `public/index.html`, `sales.html`, `property.html`, `document.html` | Add the same two lines before `</head>` | Load a shared RUM bootstrap |
-| `public/js/guance-rum.js` | One new bootstrap file | Download the official SDK asynchronously and initialize it |
-| `observability/solution-1/*` | Deployment templates, diagrams and evidence | Host-side configuration and customer instructions |
+[Editable draw.io](architecture/solution.drawio) · [SVG](architecture/solution.svg)
 
-There are **no edits to application routes, SQL queries, the custom logging function or backend business files**. This is a dependency/startup change plus four HTML entry-point additions, not hand-written backend Span instrumentation.
+## Integration effort at a glance
 
-## Annotated integration code
+The original business logic, APIs, SQL queries and database schema remain unchanged. Integration consists of three steps:
 
-### A. HTML entry points: immediately before `</head>`
+1. **Enable backend APM:** add the Beacon dependency and preload it through the application's startup configuration. HTTP, Express and SQL calls are instrumented automatically, without adding manual Spans to business code.
+2. **Enable browser RUM and replay:** add the same two script references to each of the four HTML entry pages. A shared initializer loads the official SDK asynchronously from its CDN, enables 100% session/replay sampling, masks form inputs and connects browser requests to backend traces.
+3. **Configure reporting parameters:** supply the workspace's DataWay address and the appropriate backend/browser tokens, then restart the application. Supplied scripts automate configuration generation and deployment; they are supporting delivery files, not additional business-code integration points.
 
-```html
-<!-- Solution 1: shared bootstrap downloads the Guance SDK asynchronously. -->
-<script src="/js/guance-rum.js"></script>
-```
+**Application-level changes are limited to one dependency, shared browser integration files and two script references per HTML entry page.** Startup and reporting settings are deployment configuration. The existing custom telemetry module remains in place. Logs, infrastructure/runtime metrics and profiling are outside this option's collection scope.
 
-This small same-origin bootstrap is loaded normally. The **Guance SDK itself** is dynamically downloaded from the official CDN with `async=true`, as shown next. Each HTML document initializes one SDK instance. The legacy dynamically generated `/legacy` page is not changed in this minimal option.
+The following sections provide the exact files and annotated snippets for technical review and reproduction.
 
-### B. New `public/js/guance-rum.js`
+## Annotated code: browser initialization
+
+Added at `public/js/guance-rum.js`. The SDK is downloaded from the official CDN with `async=true`; initialization waits for the CDN SDK. `sessionSampleRate=100` and `sessionReplaySampleRate=100` include every eligible session in the sampling decision. `defaultPrivacyLevel='mask-user-input'` explicitly retains the SDK's default form-input masking policy. Recording starts after initialization:
 
 ```javascript
 /* Solution 1: Guance RUM via the official CDN, loaded asynchronously.
@@ -46,25 +41,45 @@ This small same-origin bootstrap is loaded normally. The **Guance SDK itself** i
   sdk.src = 'https://static.guance.com/browser-sdk/v3/dataflux-rum.js';
   document.head.appendChild(sdk);
   window.DATAFLUX_RUM.onReady(function () {
+    if (!window.CCG_RUM_CLIENT_TOKEN) return; // Fail closed until configured.
     window.DATAFLUX_RUM.init({
       applicationId: 'CCG_S1_APM_RUM', // Created in the Hong Kong workspace.
-      datakitOrigin: window.location.origin, // Same-origin receiver; no token in HTML.
-      service: 'ccg-s1-web', env: 'poc', version: 's1-1.0.0',
+      site: 'https://cn6-rum-openway.guance.one', // Dedicated Hong Kong browser intake.
+      clientToken: window.CCG_RUM_CLIENT_TOKEN, // Browser-scoped token from deployment config.
+      service: 'ccg-s1-web', env: 'poc', version: 's1-dataway-1.1.0',
       sessionSampleRate: 100, // PoC only; choose a production sampling policy later.
-      sessionReplaySampleRate: 0, // Basic RUM only in Solution 1.
+      sessionReplaySampleRate: 100, // Record all sampled sessions.
+      defaultPrivacyLevel: 'mask-user-input', // Default privacy: mask form inputs.
       trackUserInteractions: true,
       allowedTracingUrls: [window.location.origin + '/'], // Match this application only.
       traceType: 'w3c_traceparent', tracingSampleRate: 100 // Propagate to Beacon.
     });
+    window.DATAFLUX_RUM.startSessionReplayRecording(); // Start after SDK initialization.
   });
 })(window, document);
 ```
 
-The queue avoids calling `init` before the CDN download completes. `allowedTracingUrls` and `traceType` cause matching Fetch/XHR requests to carry W3C Trace Context; Beacon continues the same Trace. The async SDK may miss requests/errors that occur before initialization, especially the first Fetch on a freshly opened page. Interact after initialization or use the existing reload button to verify association. Ordinary full-document navigation does not inject custom `traceparent` headers.
+100% is a sampling configuration, not a guarantee against browser blocking, SDK-load failure, network loss or unsupported content. Recording begins after the SDK initializes; earlier activity cannot be recovered. Existing browser sessions may retain an earlier sampling decision; validate policy changes with a fresh session. Ordinary page text remains visible; form input values are masked, and password/sensitive-field protection still applies.
 
-This SDK is separate from the customer's existing `window.RUM` helper. Its random application-local IDs are not used as Guance trace IDs. Session Replay is intentionally disabled in this basic option.
+Added in each of the four HTML entry pages:
 
-### C. New systemd drop-in from `beacon.conf`
+```html
+<!-- Read the browser-scoped token before initializing the CDN SDK. -->
+<script src="/js/guance-rum-config.js"></script>
+<script src="/js/guance-rum.js"></script>
+```
+
+`prepare-dataway.py` generates `window.CCG_RUM_CLIENT_TOKEN` in the ignored browser configuration file. This is the RUM application's browser reporting token. The privileged backend workspace token is never served to the browser.
+
+## Annotated code: automatic backend instrumentation
+
+Add this dependency to the original application and update its lockfile:
+
+```json
+"@beacon-observability/nodejs": "2.0.2"
+```
+
+Install `beacon.conf` at `/etc/systemd/system/ccg-poc.service.d/observability.conf`. `NODE_OPTIONS` loads the agent before Express/MSSQL. The exporter uses HTTPS OTLP HTTP/protobuf. W3C propagation links browser requests to automatic HTTP/Express/tedious Spans:
 
 ```ini
 # systemd drop-in: /etc/systemd/system/ccg-poc.service.d/observability.conf
@@ -72,9 +87,9 @@ This SDK is separate from the customer's existing `window.RUM` helper. Its rando
 # Preload before Express and mssql are imported; no manual request/SQL spans.
 Environment="NODE_OPTIONS=--require @beacon-observability/nodejs/register"
 Environment="OTEL_SERVICE_NAME=ccg-s1-api"
-Environment="OTEL_RESOURCE_ATTRIBUTES=env=poc,version=s1-1.0.0,service.version=s1-1.0.0,host.name=CCG-Mock-APM,solution=s1"
-Environment="OTEL_EXPORTER_OTLP_ENDPOINT=http://127.0.0.1:4317"
-Environment="OTEL_EXPORTER_OTLP_PROTOCOL=grpc"
+Environment="OTEL_RESOURCE_ATTRIBUTES=env=poc,version=s1-dataway-1.1.0,service.version=s1-dataway-1.1.0,host.name=CCG-Mock-APM,solution=s1"
+Environment="OTEL_EXPORTER_OTLP_ENDPOINT=https://cn6-openway.guance.one/otel"
+Environment="OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf"
 Environment="OTEL_PROPAGATORS=tracecontext,baggage"
 Environment="OTEL_TRACES_EXPORTER=otlp"
 Environment="OTEL_TRACES_SAMPLER=always_on"
@@ -84,66 +99,49 @@ Environment="OTEL_METRICS_EXPORTER=none"
 Environment="OTEL_LOGS_EXPORTER=none"
 Environment="OTEL_PROFILING_ENABLED=false"
 Environment="OTEL_LOG_LEVEL=warn"
+
+# Root-only backend authentication; never serve this file to browsers.
+EnvironmentFile=/etc/ccg-observability/s1-otlp.env
 ```
 
-The agent loads **before** Express and the mssql/tedious modules. HTTP, Express and tedious are automatically instrumented. No new code surrounds an HTTP handler or a database query. Startup/environment changes require a service restart.
+The `/otel` base endpoint is expanded by the exporter to `/otel/v1/traces`. `/etc/ccg-observability/s1-otlp.env` supplies `OTEL_EXPORTER_OTLP_HEADERS=X-Token=<workspace-token>` and is mode 600. No credential values are included here.
 
-### D. Nginx RUM receiver: add one exact location
+## Parameters and their sources
 
-```nginx
-# Same-origin browser reporting; the full DataKit HTTP API stays private.
-location = /v1/write/rum {
-    proxy_pass http://127.0.0.1:9529;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    client_max_body_size 10m;
-}
-```
+| Parameter | Value / where to get it |
+| --- | --- |
+| Workspace | Hong Kong console workspace selector → chinachemgroup_poc |
+| applicationId | RUM → Web application settings → CCG_S1_APM_RUM |
+| site | Same application's public DataWay integration: https://cn6-rum-openway.guance.one |
+| clientToken | Same application's Client Token; save to /etc/ccg-observability/s1-rum-client-token (600) |
+| Backend DataWay URL/token | Target workspace Integrations → installation/reporting configuration; full DK_DATAWAY URL saved to /etc/ccg-observability/dataway.url (600) |
+| OTLP endpoint | https://cn6-openway.guance.one/otel; DataWay must support OTLP HTTP/protobuf |
+| SDK URL | Official Web RUM CDN integration guide; rolling v3 URL shown in bootstrap |
+| Service names | Customer-defined ccg-s1-web and ccg-s1-api |
+| version / env / solution | Customer-defined s1-dataway-1.1.0 / poc / s1 |
+| host.name | Actual deployment identity, CCG-Mock-APM |
+| allowedTracingUrls | Actual application origin, derived from window.location.origin; PoC http://150.5.141.233/ |
+| Sampling / privacy | Customer policy: session=100, replay=100, trace=100, mask-user-input |
+| APP_DIR / unit / user | Existing /opt/ccg-poc/NodeJS_MSSQL / ccg-poc / guance-poc |
+| DB connection | Original MSSQL deployment, /etc/ccg-mssql/app.env; unchanged |
 
-Nginx is a reverse proxy in this option, **without its own Trace Span**. No browser reporting token or management API key is embedded in the HTML because RUM is forwarded to the local DataKit receiver.
+## Customer deployment steps
 
-## Deployment and parameter sources
+1. Prerequisites: original MSSQL application running, Node.js 24, npm, Nginx, systemd unit and SQL Server available. This package adds observability; it is not an OS/database installer.
+2. Create or select the Web RUM app in the target workspace. Set applicationId, site, service, env and version in the provided files. For a different origin, review trace allowlisting and any CSP requirements for CDN, receiver and replay worker resources.
+3. Store the full backend DataWay URL and browser Client Token in the root-only files listed above; directory mode 700, files mode 600. Never use the backend token as a browser clientToken. Review `prepare-dataway.py` hostname/path assertions for another region or deployment.
+4. Install locked dependencies with `npm ci --omit=dev`; run `prepare-dataway.py` to generate configuration. Install the supplied systemd drop-in and business Nginx site, run `nginx -t`, reload systemd, restart ccg-poc and reload Nginx. The supplied deploy.sh automates these operations on this dedicated PoC host; review its host-specific service-management operations before applying it to shared environments.
+5. Confirm `/api/health` reports `data_mode=mssql` and DB up. Open sales.html, wait for SDK initialization, reload the document list and open a document. In the target RUM app, inspect the matching session replay and resource trace. Use version s1-dataway-1.1.0 to isolate this deployment's data.
+6. Rollback: restore the saved Nginx/systemd configuration and original HTML/dependency files, reload configuration and restart the app. Preserve SQL data and credentials.
 
-| Parameter | This deployment | Where a customer gets it |
-| --- | --- | --- |
-| Workspace | Hong Kong `chinachemgroup_poc` | Workspace selector in the Hong Kong console |
-| Workspace UUID | `wksp_faa5a204057f423a978e63942e3dc442` | Console URL / workspace settings |
-| DataWay URL | `https://cn6-openway.guance.one?token=<WORKSPACE_TOKEN>` | Integrations → DataKit → select gateway and Token → Copy installation command |
-| `applicationId` | `CCG_S1_APM_RUM` | RUM → Create Web App → App ID |
-| App display name | `CCG S1 - APM and RUM` | Assigned during app creation |
-| Browser service | `ccg-s1-web` | Operator-chosen, set in the bootstrap |
-| Backend service | `ccg-s1-api` | Operator-chosen, set by `OTEL_SERVICE_NAME` |
-| `env`, `version` | `poc`, `s1-1.0.0` | Deployment identity; keep RUM and APM consistent |
-| Public origin | `http://150.5.141.233` | Actual URL visited by users; bootstrap reads `window.location.origin` |
-| OTLP endpoint | `http://127.0.0.1:4317` | Local DataKit OpenTelemetry receiver |
-| MSSQL configuration | `/etc/ccg-mssql/app.env` | Existing baseline database credentials; not changed by this solution |
+## Evidence and review boundary
 
-On the already deployed Ubuntu/Node/MSSQL baseline, place the target DataWay URL into `/etc/ccg-observability/dataway.url` (root only, mode 600). It is a **reporting URL**, not the Owl/API query credential. Deploy the branch under `/opt/ccg-poc/NodeJS_MSSQL`, then run:
+[evidence-dataway](evidence-dataway) contains workspace query records with exact time windows. RUM, replay and backend trace ingestion are checked against the target workspace. Existing evidence from other version tags must not be used as proof for this deployment. Direct OTLP backend records currently have a null Guance-specific span_type field in query results; trace_id/span_id/parent_id and SQL resources remain available. UI service-map rendering is not claimed as verified by the query evidence.
 
-```bash
-sudo bash /opt/ccg-poc/NodeJS_MSSQL/observability/solution-1/deploy.sh
-```
+## Official references
 
-`configure-datakit.py` stops DataKit, preserves prior workspace WAL and configurations under `/root/ccg-observability-backups`, changes the reporting destination, disables default inputs, and installs only OpenTelemetry/RUM inputs. It must be run on the dedicated PoC host, not a shared collector without reviewing its impact. Existing data is not replayed into a different workspace. APM-derived metrics, OTel metrics/log exporters and profiling are disabled. Application and Nginx local logs may still exist, but they are **not collected or reported** in this option. The customer's `/api/metrics` remains a business endpoint; tracing this URL does not enable metric collection.
+- [Session replay startup and default privacy](https://docs.guance.com/en/real-user-monitoring/session-replay/web/data-integrity/)
+- [Web RUM public DataWay integration](https://docs.guance.com/real-user-monitoring/web/app-access/)
+- [OTLP DataWay routes and authentication](https://docs.guance.com/en/deployment/dataway/)
 
-Verify `systemctl is-active ccg-poc datakit nginx`, `/api/health` (`data_mode=mssql`, `db.up=true`), and a sales-page reload after the CDN SDK initializes. SQL Server remains localhost-only. The baseline uses a self-signed SQL Server certificate trusted by the local test application; use the customer's certificate policy outside this PoC.
-
-## Verified results in the target workspace
-
-Requested query window: **2026-11-21T09:24:48.481000+08:00 to 2026-11-21T09:34:48.481000+08:00**. Domain/source discovery and each DQL were validated before execution. These are bounded samples, not a long-term reliability conclusion.
-
-- Fifteen functional HTTP checks passed, including MSSQL health, the sales/document pages, both data lists and all eight document-detail APIs. See [function-check.json](evidence/function-check.json).
-- App `CCG_S1_APM_RUM`: View, Resource, Action, Session and Long Task records were returned.
-- Both `ccg-s1-web` and `ccg-s1-api` are present in APM; `execSql properties` is independently visible.
-- Example correlated Trace: `472f3fc6e7a4d6f25411f51994fea04d`; the backend HTTP parent is the browser Span `5411f51994fea04d`. The same Trace includes tedious SQL spans.
-- Browser session: `29f5e49a-2620-4da7-aca9-e821ce054fb4`.
-- Query for logs under the two solution services returned count 0. CPU data under `solution=s1` returned no samples; host input files and default inputs are disabled. This is a scoped negative check, not a claim that this shared workspace has no other customers' metrics.
-- DataKit has only `datakit.conf`, `opentelemetry.conf` and `rum.conf` active at the top-level input directory.
-
-Machine-readable evidence is in [evidence](evidence). Observation-point architecture is editable, and the pre-integration architecture is retained for comparison.
-
-## References
-
-- [Beacon Node.js automatic instrumentation](https://docs.guance.com/en/beacon/nodejs/)
-- [Web RUM integration: CDN async](https://docs.guance.com/real-user-monitoring/web/app-access/)
-- [DataKit OpenTelemetry receiver](https://docs.guance.com/integrations/opentelemetry/)
+Replay verification: version `s1-dataway-1.1.0`, app `CCG_S1_APM_RUM`, session `de736f5f-08b8-4ed4-a435-8d943d6609b9`; multiple session_replay records were received in the Hong Kong workspace. See [replay evidence](evidence-dataway/replay-100/replay.json) and [live configuration check](evidence-dataway/replay-100/configuration.json).
