@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: properties-web-node
+spec:
+  progressDeadlineSeconds: 1800
+  replicas: 1
+  selector:
+    matchLabels: {app: properties-web-node}
+  template:
+    metadata:
+      labels: {app: properties-web-node}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile: {type: RuntimeDefault}
+      initContainers:
+        - name: install-beacon
+          image: ghcr.io/beacon-observability/beacon-nodejs:2.0.2@sha256:f9aeac2c291361db7696f6dd154f26b9dd6c2231bc6bbdc4ed20ef484c241f3e
+          command: [sh, -ec, "cp -R /opt/beacon-nodejs/node_modules /probe/"]
+          volumeMounts:
+            - {name: beacon, mountPath: /probe}
+      containers:
+        - name: rum-gateway
+          image: docker.io/library/nginx:1.28-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
+          command: [sh, -ec]
+          args:
+            - |
+              grep -Eq '^[[:xdigit:]]{32}$' /browser/client-token
+              sed "s/__CLIENT_TOKEN__/$(cat /browser/client-token)/" /config/rum.js > /tmp/rum.js
+              exec nginx -c /config/nginx.conf -g 'daemon off;'
+          ports: [{name: gateway, containerPort: 8081}]
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 10m, memory: 16Mi}
+            limits: {memory: 64Mi}
+          readinessProbe:
+            httpGet: {path: /_guance/rum.js, port: gateway}
+          volumeMounts:
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: browser, mountPath: /browser, readOnly: true}
+            - {name: scratch, mountPath: /tmp}
+        - name: web
+          image: docker.io/alexchui210246098/properties-web:nodejs1.1@sha256:9ef1737017fc5ea9351bc5e03eb71a34699dbaf20a87380f2d310ead80bd53b1
+          ports: [{name: http, containerPort: 8080}]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: "1", memory: 512Mi}
+          env:
+            - {name: DATA_MODE, value: mssql}
+            - {name: APP_ENV, value: test}
+            - {name: DB_HOST, value: properties-sql}
+            - {name: DB_NAME, value: properties}
+            - {name: DB_USER, value: properties_reader}
+            - {name: DB_ENCRYPT, value: "1"}
+            - {name: DB_TRUST_SERVER_CERT, value: "1"}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef: {name: properties-sql-reader, key: password}
+            - {name: NODE_OPTIONS, value: "--require=/probe/node_modules/@beacon-observability/nodejs/build/src/register.js"}
+            - {name: OTEL_SERVICE_NAME, value: ccg-k8s-api}
+            - {name: OTEL_RESOURCE_ATTRIBUTES, value: "env=test,deployment.environment.name=test"}
+            - {name: OTEL_EXPORTER_OTLP_ENDPOINT, value: "https://cn6-openway.guance.one/otel"}
+            - {name: OTEL_EXPORTER_OTLP_PROTOCOL, value: http/protobuf}
+            - {name: OTEL_PROPAGATORS, value: "tracecontext,baggage"}
+            - {name: OTEL_NODE_ENABLED_INSTRUMENTATIONS, value: "http,express,tedious"}
+            - {name: OTEL_METRICS_EXPORTER, value: none}
+            - {name: OTEL_LOGS_EXPORTER, value: none}
+            - {name: OTEL_PROFILING_ENABLED, value: "false"}
+            - name: OTEL_EXPORTER_OTLP_HEADERS
+              valueFrom:
+                secretKeyRef: {name: guance-intake, key: otlp-headers}
+          readinessProbe:
+            httpGet: {path: /api/health, port: http}
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket: {port: http}
+            periodSeconds: 20
+          volumeMounts:
+            - {name: beacon, mountPath: /probe, readOnly: true}
+      volumes:
+        - name: config
+          configMap: {name: guance-pages}
+        - name: browser
+          secret: {secretName: guance-browser}
+        - {name: scratch, emptyDir: {}}
+        - {name: beacon, emptyDir: {}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: properties-web-node
+spec:
+  type: LoadBalancer
+  allocateLoadBalancerNodePorts: false
+  selector: {app: properties-web-node}
+  ports: [{name: http, port: 80, targetPort: gateway}]

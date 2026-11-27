@@ -1,3 +1,5 @@
+# 華懋測試環境（MSSQL + 觀測雲 RUM / Beacon APM）請依 guance/README.md 發佈。
+
 # =====================================================================
 # properties-web (NodeJS + MSSQL) — APM Demo 部署清单
 #   kubectl apply -f k8s/nodejs-apm.yaml
