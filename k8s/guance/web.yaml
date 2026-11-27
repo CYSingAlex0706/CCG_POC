@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: properties-web-node
+spec:
+  progressDeadlineSeconds: 1800
+  replicas: 1
+  selector:
+    matchLabels: {app: properties-web-node}
+  template:
+    metadata:
+      labels: {app: properties-web-node}
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile: {type: RuntimeDefault}
+      initContainers:
+        - name: install-beacon
+          image: ghcr.io/beacon-observability/beacon-nodejs:2.0.2@sha256:f9aeac2c291361db7696f6dd154f26b9dd6c2231bc6bbdc4ed20ef484c241f3e
+          command: [sh, -ec, "cp -R /opt/beacon-nodejs/node_modules /probe/"]
+          volumeMounts:
+            - {name: beacon, mountPath: /probe}
+      containers:
+        - name: web
+          image: docker.io/alexchui210246098/properties-web:nodejs1.1@sha256:9ef1737017fc5ea9351bc5e03eb71a34699dbaf20a87380f2d310ead80bd53b1
+          ports: [{name: http, containerPort: 8080}]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: "1", memory: 512Mi}
+          env:
+            - {name: DATA_MODE, value: mssql}
+            - {name: APP_ENV, value: test}
+            - {name: DB_HOST, value: properties-sql}
+            - {name: DB_NAME, value: properties}
+            - {name: DB_USER, value: properties_reader}
+            - {name: DB_ENCRYPT, value: "1"}
+            - {name: DB_TRUST_SERVER_CERT, value: "1"}
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef: {name: properties-sql-reader, key: password}
+            - {name: NODE_OPTIONS, value: "--require=/probe/node_modules/@beacon-observability/nodejs/build/src/register.js"}
+            - {name: OTEL_SERVICE_NAME, value: ccg-k8s-api}
+            - {name: OTEL_RESOURCE_ATTRIBUTES, value: "env=test,deployment.environment.name=test"}
+            - {name: OTEL_EXPORTER_OTLP_ENDPOINT, value: "https://cn6-openway.guance.one/otel"}
+            - {name: OTEL_EXPORTER_OTLP_PROTOCOL, value: http/protobuf}
+            - {name: OTEL_PROPAGATORS, value: "tracecontext,baggage"}
+            - {name: OTEL_NODE_ENABLED_INSTRUMENTATIONS, value: "http,express,tedious"}
+            - {name: OTEL_METRICS_EXPORTER, value: none}
+            - {name: OTEL_LOGS_EXPORTER, value: none}
+            - {name: OTEL_PROFILING_ENABLED, value: "false"}
+            - name: OTEL_EXPORTER_OTLP_HEADERS
+              valueFrom:
+                secretKeyRef: {name: guance-intake, key: otlp-headers}
+          readinessProbe:
+            httpGet: {path: /api/health, port: http}
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket: {port: http}
+            periodSeconds: 20
+          volumeMounts:
+            - {name: frontend, mountPath: /app/public/document.html, subPath: document.html, readOnly: true}
+            - {name: frontend, mountPath: /app/public/index.html, subPath: index.html, readOnly: true}
+            - {name: frontend, mountPath: /app/public/property.html, subPath: property.html, readOnly: true}
+            - {name: frontend, mountPath: /app/public/sales.html, subPath: sales.html, readOnly: true}
+            - {name: frontend, mountPath: /app/public/js/guance-rum.js, subPath: guance-rum.js, readOnly: true}
+            - {name: frontend, mountPath: /app/src/server.js, subPath: server.js, readOnly: true}
+            - {name: browser, mountPath: /app/public/guance-client-token, subPath: client-token, readOnly: true}
+            - {name: beacon, mountPath: /probe, readOnly: true}
+      volumes:
+        - name: frontend
+          configMap: {name: guance-frontend}
+        - name: browser
+          secret:
+            secretName: guance-browser
+            items: [{key: client-token, path: client-token}]
+        - {name: beacon, emptyDir: {}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: properties-web-node
+spec:
+  type: LoadBalancer
+  allocateLoadBalancerNodePorts: false
+  selector: {app: properties-web-node}
+  ports: [{name: http, port: 80, targetPort: http}]
