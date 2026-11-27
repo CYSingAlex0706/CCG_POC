@@ -23,29 +23,14 @@ spec:
           command: [sh, -ec, "cp -R /opt/beacon-nodejs/node_modules /probe/"]
           volumeMounts:
             - {name: beacon, mountPath: /probe}
-      containers:
-        - name: rum-gateway
-          image: docker.io/library/nginx:1.28-alpine@sha256:a8b39bd9cf0f83869a2162827a0caf6137ddf759d50a171451b335cecc87d236
-          command: [sh, -ec]
-          args:
-            - |
-              grep -Eq '^[[:xdigit:]]{32}$' /browser/client-token
-              sed "s/__CLIENT_TOKEN__/$(cat /browser/client-token)/" /config/rum.js > /tmp/rum.js
-              exec nginx -c /config/nginx.conf -g 'daemon off;'
-          ports: [{name: gateway, containerPort: 8081}]
-          securityContext:
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
-            capabilities: {drop: [ALL]}
-          resources:
-            requests: {cpu: 10m, memory: 16Mi}
-            limits: {memory: 64Mi}
-          readinessProbe:
-            httpGet: {path: /_guance/rum.js, port: gateway}
+        - name: prepare-rum
+          image: docker.io/alexchui210246098/properties-web:nodejs1.1@sha256:9ef1737017fc5ea9351bc5e03eb71a34699dbaf20a87380f2d310ead80bd53b1
+          command: [node, /config/prepare-rum.cjs]
           volumeMounts:
             - {name: config, mountPath: /config, readOnly: true}
             - {name: browser, mountPath: /browser, readOnly: true}
-            - {name: scratch, mountPath: /tmp}
+            - {name: prepared, mountPath: /prepared}
+      containers:
         - name: web
           image: docker.io/alexchui210246098/properties-web:nodejs1.1@sha256:9ef1737017fc5ea9351bc5e03eb71a34699dbaf20a87380f2d310ead80bd53b1
           ports: [{name: http, containerPort: 8080}]
@@ -87,13 +72,15 @@ spec:
             tcpSocket: {port: http}
             periodSeconds: 20
           volumeMounts:
+            - {name: prepared, mountPath: /app/public, subPath: public, readOnly: true}
+            - {name: prepared, mountPath: /app/src/server.js, subPath: server.js, readOnly: true}
             - {name: beacon, mountPath: /probe, readOnly: true}
       volumes:
         - name: config
           configMap: {name: guance-pages}
         - name: browser
           secret: {secretName: guance-browser}
-        - {name: scratch, emptyDir: {}}
+        - {name: prepared, emptyDir: {}}
         - {name: beacon, emptyDir: {}}
 ---
 apiVersion: v1
@@ -104,4 +91,4 @@ spec:
   type: LoadBalancer
   allocateLoadBalancerNodePorts: false
   selector: {app: properties-web-node}
-  ports: [{name: http, port: 80, targetPort: gateway}]
+  ports: [{name: http, port: 80, targetPort: http}]

@@ -3,4 +3,4 @@ kind: Kustomization
 resources: [web.yaml]
 configMapGenerator:
   - name: guance-pages
-    files: [nginx.conf, rum.js]
+    files: [prepare-rum.cjs, rum.js]

@@ -21,7 +21,7 @@
 | 元件 | 執行方式 |
 | --- | --- |
 | 業務應用 | 使用客戶發佈的 `properties-web:nodejs1.1`，以摘要固定版本。預設清單的舊 `:nodejs` 映像缺少此版本的靜態頁面。 |
-| 瀏覽器 RUM | 同一 Pod 的 Nginx 對 HTML 回應的頁首加入同源載入器，涵蓋靜態頁與動態產生的 /legacy 頁。瀏覽器以 async 載入官方 CDN v3 SDK。保留原有銷售頁面與內建監控面板。 |
+| 瀏覽器 RUM | prepare-rum 啟動容器讀取同版本映像中的靜態頁與 /legacy 的 HTML 模板，在共享卷的副本加入載入器。Node.js 唯讀掛載並直接提供這些檔案，Service 轉發至 8080。升級映像時，若模板標記改變，啟動容器會報錯，應先更新 prepare-rum.cjs。瀏覽器以 async 載入官方 CDN v3 SDK。保留原有銷售頁面與內建監控面板。 |
 | 後端 APM | `web.yaml` 以 init container 複製 Beacon Node.js 2.0.2，透過 NODE_OPTIONS 在 Express 及 MSSQL 驅動程式載入前啟動探針。鏈路透過 OTLP/HTTP 直送香港 DataWay。 |
 | MSSQL | `database.sh` 使用專案原有的 `NodeJS_MSSQL/db/MMSQL.sql` 建立資料表與示範文件。應用使用唯讀帳戶，管理員密碼與應用密碼分開存放。重新發佈會沿用 PVC 與 Secret。 |
 
@@ -30,7 +30,7 @@
 1. 執行 `kubectl -n ccg-test get svc properties-web-node` 取得測試入口。也可執行 `kubectl -n ccg-test port-forward svc/properties-web-node 8080:80`，透過瀏覽器開啟 `http://localhost:8080/sales.html`。選取銷售文件以產生一次查詢。
 2. 在觀測雲香港站登入 `chinachemgroup_poc`，於「用戶訪問監測」開啟 `CCG_K8S_MSSQL`。選擇最近 15 分鐘，查看 View 與 Resource，前端服務名為 `ccg-k8s-web`。
 3. 於「應用性能監測 → 鏈路」篩選 `service=ccg-k8s-api`，查看 `GET /api/documents` 的 HTTP、Express 與 SQL 查詢。RUM 啟動後，同源 API 請求會帶 W3C traceparent，可用 Resource 的 Trace ID 比對後端鏈路。
-4. 本測試環境將會話與追蹤採樣設為 100%，會話重放採樣為 0%。若只看見頁面而沒有鏈路，重新整理銷售頁，待 SDK 載入後再查詢一次文件。瀏覽器 Network 可檢查 CDN 與 `/v1/write/rum` 回應。
+4. 本測試環境將會話、重放與前後端追蹤採樣均設為 100%。SDK 初始化後即開始錄製，以 mask-user-input 遮蔽輸入值。進入該次會話的「會話重放」即可查看操作，再從 Resource 的 Trace ID 查看後端處理。若只看見頁面而沒有鏈路，重新整理銷售頁，待 SDK 載入後再查詢一次文件。瀏覽器 Network 可檢查 CDN 與 `/v1/write/rum` 回應。
 
 ## 重發佈及排查
 
@@ -39,7 +39,7 @@
 ```bash
 kubectl -n ccg-test get pods,pvc,svc
 kubectl -n ccg-test logs deploy/properties-web-node -c install-beacon
-kubectl -n ccg-test logs deploy/properties-web-node -c rum-gateway
+kubectl -n ccg-test logs deploy/properties-web-node -c prepare-rum
 kubectl -n ccg-test logs deploy/properties-web-node -c web --tail=50
 ```
 

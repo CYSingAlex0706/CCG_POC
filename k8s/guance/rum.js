@@ -10,12 +10,14 @@
       service: 'ccg-k8s-web',
       env: 'test',
       sessionSampleRate: 100,
-      sessionReplaySampleRate: 0,
+      sessionReplaySampleRate: 100,
+      defaultPrivacyLevel: 'mask-user-input',
       trackUserInteractions: true,
       allowedTracingUrls: [window.location.origin + '/api/'],
       traceType: 'w3c_traceparent',
       tracingSampleRate: 100
     });
+    window.DATAFLUX_RUM.startSessionReplayRecording();
   });
   const sdk = document.createElement('script');
   sdk.async = true;
