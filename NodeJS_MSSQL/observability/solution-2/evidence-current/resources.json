@@ -1,0 +1,63 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "resources",
+  "query": "R::resource:(trace_id,span_id,session_id,resource_url,resource_type) { app_id = \"CCG_S2_FULLSTACK\" AND version = \"s2-dataway-1.1.0\" AND resource_url IN [\"http://150.5.141.233/api/documents\",\"http://150.5.141.233/api/documents/1\"] } LIMIT 10",
+  "start_time": 1795266341301,
+  "end_time": 1795267241301,
+  "validation": {
+    "query_text": "R::resource:(trace_id,span_id,session_id,resource_url,resource_type) { app_id = \"CCG_S2_FULLSTACK\" AND version = \"s2-dataway-1.1.0\" AND resource_url IN [\"http://150.5.141.233/api/documents\",\"http://150.5.141.233/api/documents/1\"] } LIMIT 10",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795267241301,
+        "start_time": 1795266341301
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "178ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "resource_type": "fetch",
+          "resource_url": "http://150.5.141.233/api/documents",
+          "session_id": "94f45fae-e24b-4631-b638-ab5244eff662",
+          "span_id": "758d672936ff8793",
+          "time": 1795267215634,
+          "trace_id": "6a33ab582d270073758d672936ff8793"
+        },
+        {
+          "resource_type": "fetch",
+          "resource_url": "http://150.5.141.233/api/documents",
+          "session_id": "94f45fae-e24b-4631-b638-ab5244eff662",
+          "span_id": "27f7831f7c58ae1c",
+          "time": 1795266967403,
+          "trace_id": "556f1229bf568c7d27f7831f7c58ae1c"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b019aae00000000e76f154d4938b78b",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

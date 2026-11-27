@@ -1,0 +1,89 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "by-app",
+  "query": "R::`*`:(count(*)) { app_id IN [\"CCG_S1_APM_RUM\",\"CCG_S2_FULLSTACK\"] } BY app_id,source,version",
+  "start_time": 1795268280000,
+  "end_time": 1795269922795,
+  "validation": {
+    "query_text": "R::`*`:(count(*)) { app_id IN [\"CCG_S1_APM_RUM\",\"CCG_S2_FULLSTACK\"] } BY app_id,source,version",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795269922795,
+        "start_time": 1795268280000
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "342ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "app_id": "CCG_S2_FULLSTACK",
+          "count(*)": 33,
+          "source": "session_replay",
+          "time": 1795269884413,
+          "version": "s2-dataway-1.1.0"
+        },
+        {
+          "app_id": "CCG_S2_FULLSTACK",
+          "count(*)": 7,
+          "source": "long_task",
+          "time": 1795269562718,
+          "version": "s2-dataway-1.1.0"
+        },
+        {
+          "app_id": "CCG_S2_FULLSTACK",
+          "count(*)": 1,
+          "source": "session",
+          "time": 1795268600160,
+          "version": "s2-dataway-1.1.0"
+        },
+        {
+          "app_id": "CCG_S2_FULLSTACK",
+          "count(*)": 6,
+          "source": "action",
+          "time": 1795268637424,
+          "version": "s2-dataway-1.1.0"
+        },
+        {
+          "app_id": "CCG_S2_FULLSTACK",
+          "count(*)": 1850,
+          "source": "resource",
+          "time": 1795269900369,
+          "version": "s2-dataway-1.1.0"
+        },
+        {
+          "app_id": "CCG_S2_FULLSTACK",
+          "count(*)": 8,
+          "source": "view",
+          "time": 1795268630625,
+          "version": "s2-dataway-1.1.0"
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b01a52300000000787c486e9fbccbf1",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "at": "2026-11-21T13:20:41.205806+00:00",
+  "public_initializer_checks": {
+    "CCG_S2_FULLSTACK": true,
+    "s2-dataway-1.1.0": true,
+    "mask-user-input": true,
+    "startSessionReplayRecording": true,
+    "cn6-rum-openway.guance.one": true
+  },
+  "sessionSampleRate": 100,
+  "sessionReplaySampleRate": 100,
+  "defaultPrivacyLevel": "mask-user-input",
+  "application_source_diff_empty": true
+}

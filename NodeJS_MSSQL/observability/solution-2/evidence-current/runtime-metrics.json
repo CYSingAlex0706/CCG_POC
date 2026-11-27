@@ -1,0 +1,52 @@
+{
+  "workspace": "chinachemgroup_poc",
+  "workspace_uuid": "wksp_faa5a204057f423a978e63942e3dc442",
+  "name": "runtime-metrics",
+  "query": "M::otel_service:(last(`nodejs.eventloop.utilization`),last(`v8js.memory.heap.used`)) { service_name = \"ccg-s2-api\" }",
+  "start_time": 1795266341301,
+  "end_time": 1795267241301,
+  "validation": {
+    "query_text": "M::otel_service:(last(`nodejs.eventloop.utilization`),last(`v8js.memory.heap.used`)) { service_name = \"ccg-s2-api\" }",
+    "raw_output": "",
+    "request_executed": false,
+    "time_range": {
+      "effective": "unknown",
+      "observed": "unknown",
+      "requested": {
+        "end_time": 1795267241301,
+        "start_time": 1795266341301
+      }
+    },
+    "valid": true
+  },
+  "result": {
+    "data": {
+      "async_id": "",
+      "cost": "8ms",
+      "coverage": "unknown",
+      "is_running": false,
+      "items": [
+        {
+          "last(nodejs.eventloop.utilization)": 0.0018500124429945,
+          "last(v8js.memory.heap.used)": 0,
+          "time": 1795267231119
+        }
+      ],
+      "page_info": {
+        "has_more": false
+      },
+      "partial": false,
+      "query_status": "",
+      "sample": 1,
+      "sampling_required": false
+    },
+    "data_state": "present",
+    "meta": {
+      "path": "/api/v1/data/query",
+      "tool": "owl.data.query",
+      "trace_id": "6b019ab500000000fab3f113ec365c30",
+      "upstream_path": "/api/v1/df/query_data_v1"
+    },
+    "success": true
+  }
+}
