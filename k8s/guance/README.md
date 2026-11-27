@@ -21,7 +21,7 @@
 | 元件 | 執行方式 |
 | --- | --- |
 | 業務應用 | 使用客戶發佈的 `properties-web:nodejs1.1`，以摘要固定版本。預設清單的舊 `:nodejs` 映像缺少此版本的靜態頁面。 |
-| 瀏覽器 RUM | prepare-rum 啟動容器讀取同版本映像中的靜態頁與 /legacy 的 HTML 模板，在共享卷的副本加入載入器。Node.js 唯讀掛載並直接提供這些檔案，Service 轉發至 8080。升級映像時，若模板標記改變，啟動容器會報錯，應先更新 prepare-rum.cjs。瀏覽器以 async 載入官方 CDN v3 SDK。保留原有銷售頁面與內建監控面板。 |
+| 瀏覽器 RUM | 四個靜態頁面和 `/legacy` 模板在頁首以 `<script async>` 載入官方 CDN SDK。`public/js/guance-rum.js` 從同源讀取瀏覽器專用 Client Token，初始化 SDK 並啟動重放。測試叢集透過 Kustomize 將這些版本控制中的原始檔案唯讀掛載到原有映像，Service 直接轉發至 Node.js 8080。 |
 | 後端 APM | `web.yaml` 以 init container 複製 Beacon Node.js 2.0.2，透過 NODE_OPTIONS 在 Express 及 MSSQL 驅動程式載入前啟動探針。鏈路透過 OTLP/HTTP 直送香港 DataWay。 |
 | MSSQL | `database.sh` 使用專案原有的 `NodeJS_MSSQL/db/MMSQL.sql` 建立資料表與示範文件。應用使用唯讀帳戶，管理員密碼與應用密碼分開存放。重新發佈會沿用 PVC 與 Secret。 |
 
@@ -39,7 +39,6 @@
 ```bash
 kubectl -n ccg-test get pods,pvc,svc
 kubectl -n ccg-test logs deploy/properties-web-node -c install-beacon
-kubectl -n ccg-test logs deploy/properties-web-node -c prepare-rum
 kubectl -n ccg-test logs deploy/properties-web-node -c web --tail=50
 ```
 

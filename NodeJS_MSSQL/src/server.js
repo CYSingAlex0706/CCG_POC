@@ -213,6 +213,8 @@ app.get('/legacy', async (req, res) => {
     <td>${esc(fmtDate(d.sale_date))}</td><td>${esc(d.status)}</td>
     <td>${esc(d.document_type)}</td></tr>`).join('');
   res.send(`<!doctype html><html lang="en"><head><meta charset="utf-8">
+<script async src="https://static.guance.com/browser-sdk/v3/dataflux-rum.js"></script>
+<script defer src="/js/guance-rum.js"></script>
   <title>Properties — Sale documents (legacy)</title><style>
   body{font-family:system-ui,sans-serif;margin:2rem;background:#f7f7f9}
   table{border-collapse:collapse;width:100%;background:#fff}

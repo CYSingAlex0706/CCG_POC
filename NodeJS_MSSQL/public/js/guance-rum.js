@@ -1,4 +1,9 @@
-(function () {
+(async function () {
+  // The cluster exposes only the browser-scoped Client Token at this URL.
+  const response = await fetch('/guance-client-token', { cache: 'no-store' });
+  if (!response.ok) return;
+  const clientToken = (await response.text()).trim();
+  if (!/^[0-9a-f]{32}$/i.test(clientToken)) return;
   const rum = window.DATAFLUX_RUM = window.DATAFLUX_RUM || {
     q: [], onReady(callback) { this.q.push(callback); }
   };
@@ -6,7 +11,7 @@
     window.DATAFLUX_RUM.init({
       applicationId: 'CCG_K8S_MSSQL',
       site: 'https://cn6-rum-openway.guance.one',
-      clientToken: '__CLIENT_TOKEN__',
+      clientToken,
       service: 'ccg-k8s-web',
       env: 'test',
       sessionSampleRate: 100,
@@ -19,8 +24,4 @@
     });
     window.DATAFLUX_RUM.startSessionReplayRecording();
   });
-  const sdk = document.createElement('script');
-  sdk.async = true;
-  sdk.src = 'https://static.guance.com/browser-sdk/v3/dataflux-rum.js';
-  document.head.appendChild(sdk);
-})();
+})().catch(() => console.warn('Unable to initialize Guance RUM'));

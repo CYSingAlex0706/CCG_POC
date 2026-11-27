@@ -23,13 +23,6 @@ spec:
           command: [sh, -ec, "cp -R /opt/beacon-nodejs/node_modules /probe/"]
           volumeMounts:
             - {name: beacon, mountPath: /probe}
-        - name: prepare-rum
-          image: docker.io/alexchui210246098/properties-web:nodejs1.1@sha256:9ef1737017fc5ea9351bc5e03eb71a34699dbaf20a87380f2d310ead80bd53b1
-          command: [node, /config/prepare-rum.cjs]
-          volumeMounts:
-            - {name: config, mountPath: /config, readOnly: true}
-            - {name: browser, mountPath: /browser, readOnly: true}
-            - {name: prepared, mountPath: /prepared}
       containers:
         - name: web
           image: docker.io/alexchui210246098/properties-web:nodejs1.1@sha256:9ef1737017fc5ea9351bc5e03eb71a34699dbaf20a87380f2d310ead80bd53b1
@@ -72,15 +65,21 @@ spec:
             tcpSocket: {port: http}
             periodSeconds: 20
           volumeMounts:
-            - {name: prepared, mountPath: /app/public, subPath: public, readOnly: true}
-            - {name: prepared, mountPath: /app/src/server.js, subPath: server.js, readOnly: true}
+            - {name: frontend, mountPath: /app/public/document.html, subPath: document.html, readOnly: true}
+            - {name: frontend, mountPath: /app/public/index.html, subPath: index.html, readOnly: true}
+            - {name: frontend, mountPath: /app/public/property.html, subPath: property.html, readOnly: true}
+            - {name: frontend, mountPath: /app/public/sales.html, subPath: sales.html, readOnly: true}
+            - {name: frontend, mountPath: /app/public/js/guance-rum.js, subPath: guance-rum.js, readOnly: true}
+            - {name: frontend, mountPath: /app/src/server.js, subPath: server.js, readOnly: true}
+            - {name: browser, mountPath: /app/public/guance-client-token, subPath: client-token, readOnly: true}
             - {name: beacon, mountPath: /probe, readOnly: true}
       volumes:
-        - name: config
-          configMap: {name: guance-pages}
+        - name: frontend
+          configMap: {name: guance-frontend}
         - name: browser
-          secret: {secretName: guance-browser}
-        - {name: prepared, emptyDir: {}}
+          secret:
+            secretName: guance-browser
+            items: [{key: client-token, path: client-token}]
         - {name: beacon, emptyDir: {}}
 ---
 apiVersion: v1

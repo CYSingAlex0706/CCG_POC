@@ -33,7 +33,7 @@ kubectl -n "$ns" exec deployment/properties-web-node -c web -- env NODE_OPTIONS=
 (async () => {
   const origin = "http://127.0.0.1:8080";
   const page = await fetch(origin + "/sales.html");
-  if (!page.ok || !(await page.text()).includes("/_guance/rum.js")) throw Error("RUM loader missing");
+  if (!page.ok || !(await page.text()).includes("<script async src=\"https://static.guance.com/browser-sdk/v3/dataflux-rum.js\"")) throw Error("RUM loader missing");
   const get = async path => {
     const res = await fetch(origin + "/api/" + path);
     if (!res.ok) throw Error(path + " returned HTTP " + res.status);
